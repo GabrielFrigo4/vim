@@ -1,0 +1,54 @@
+#!/usr/bin/env sh
+
+### ================================
+### VIM PRE-COMMIT HOOK
+### ================================
+
+set -e
+
+_repo_root="$(git rev-parse --show-toplevel 2> "/dev/null" || pwd)"
+cd "${_repo_root}"
+
+echo "🔍 [pre-commit] Executing Vim quality & syntax gates..."
+
+### --------------------------------
+### Whitespace & Formatting Check
+### --------------------------------
+echo "  ↳ Checking whitespace and formatting (git diff --check)..."
+if ! git diff --check --cached; then
+	echo "❌ [pre-commit] Whitespace or EOF formatting error detected!" >&2
+	echo "   Run 'git diff --check --cached' to inspect issues." >&2
+	exit 1
+fi
+
+### --------------------------------
+### Headless Startup Validation
+### --------------------------------
+if command -v vim > "/dev/null" 2>&1; then
+	echo "  ↳ Validating Vim headless startup..."
+	if ! vim -u vimrc -es -c "quit" > "/dev/null" 2>&1; then
+		echo "❌ [pre-commit] Vim headless startup failed!" >&2
+		exit 1
+	fi
+fi
+
+### --------------------------------
+### Markdown Prettier Validation
+### --------------------------------
+if command -v prettier > "/dev/null" 2>&1; then
+	echo "  ↳ Validating staged Markdown files with Prettier..."
+	_unformatted_md=""
+	for _md_file in $(git diff --cached --name-only --diff-filter=d | grep '\.md$' || true); do
+		if [ -f "${_md_file}" ] && ! prettier --check "${_md_file}" > "/dev/null" 2>&1; then
+			_unformatted_md="${_unformatted_md} ${_md_file}"
+		fi
+	done
+	if [ -n "${_unformatted_md}" ]; then
+		echo "❌ [pre-commit] Unformatted Markdown files detected:${_unformatted_md}" >&2
+		echo "   Run 'prettier --write <file>' to format." >&2
+		exit 1
+	fi
+fi
+
+echo "✅ [pre-commit] All Vim quality gates passed cleanly!"
+exit 0

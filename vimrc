@@ -8,6 +8,14 @@ filetype plugin indent on
 syntax on
 set encoding=UTF-8
 
+let s:vim_dir = expand('<sfile>:p:h')
+if stridx(&runtimepath, s:vim_dir) == -1
+    let &runtimepath = s:vim_dir . ',' . &runtimepath . ',' . s:vim_dir . '/after'
+endif
+if filereadable(s:vim_dir . '/autoload/plug.vim') && !exists('*plug#begin')
+    execute 'source ' . fnameescape(s:vim_dir . '/autoload/plug.vim')
+endif
+
 " --- Interface & Visual ---
 set number
 set relativenumber
@@ -54,30 +62,32 @@ set background=dark
 "  PLUGINS (Vim-Plug)
 " ============================================================================ {{{
 
-call plug#begin()
+if exists('*plug#begin')
+    call plug#begin()
 
-    " --- Interface ---
-    Plug 'ryanoasis/vim-devicons'
-    Plug 'tomasiser/vim-code-dark'
-    Plug 'vim-airline/vim-airline'
+        " --- Interface ---
+        Plug 'ryanoasis/vim-devicons'
+        Plug 'tomasiser/vim-code-dark'
+        Plug 'vim-airline/vim-airline'
 
-    " --- Ferramentas ---
-    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    Plug 'junegunn/fzf.vim'
-    Plug 'preservim/nerdtree'
-    Plug 'mg979/vim-visual-multi'
-    Plug 'tpope/vim-surround'
-    Plug 'vim-scripts/Tagbar'
+        " --- Ferramentas ---
+        Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+        Plug 'junegunn/fzf.vim'
+        Plug 'preservim/nerdtree'
+        Plug 'mg979/vim-visual-multi'
+        Plug 'tpope/vim-surround'
+        Plug 'vim-scripts/Tagbar'
 
-    " --- Linguagens (Geral) ---
-    Plug 'sheerun/vim-polyglot'
+        " --- Linguagens (Geral) ---
+        Plug 'sheerun/vim-polyglot'
 
-    " --- Assembly (Específico) ---
-    Plug 'GabrielFrigo4/fasm.vim'
-    Plug 'kylelaker/riscv.vim'
-    Plug 'ARM9/arm-syntax-vim'
+        " --- Assembly (Específico) ---
+        Plug 'GabrielFrigo4/fasm.vim'
+        Plug 'kylelaker/riscv.vim'
+        Plug 'ARM9/arm-syntax-vim'
 
-call plug#end()
+    call plug#end()
+endif
 
 " }}}
 
@@ -114,7 +124,7 @@ nnoremap <expr> <Backspace> col('.') == 1 ? 'kgJ' : 'X'
 " ============================================================================ {{{
 
 " --- Tema ---
-colorscheme codedark
+silent! colorscheme codedark
 
 " --- Estilo do Cursor ---
 au VimEnter,VimResume * set guicursor=n-c:block,i-ci-ve:ver25,r-cr:hor10,o:hor50,v:hor10,a:blinkwait500-blinkoff500-blinkon500-Cursor/lCursor
