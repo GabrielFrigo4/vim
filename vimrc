@@ -1,8 +1,14 @@
-" ============================================================================
-"  GERAL
-" ============================================================================ {{{
+" ----------------------------------------------------------------
+" Config: Vim Classic Resilient Configuration
+" ----------------------------------------------------------------
 
-" --- Essenciais ---
+" ================================
+" GERAL
+" ================================
+
+" --------------------------------
+" Essenciais
+" --------------------------------
 set nocompatible
 filetype plugin indent on
 syntax on
@@ -16,7 +22,9 @@ if filereadable(s:vim_dir . '/autoload/plug.vim') && !exists('*plug#begin')
     execute 'source ' . fnameescape(s:vim_dir . '/autoload/plug.vim')
 endif
 
-" --- Interface & Visual ---
+" --------------------------------
+" Interface & Visual
+" --------------------------------
 set number
 set relativenumber
 set cursorline
@@ -26,13 +34,17 @@ set showcmd
 set wildmenu
 set wildmode=list:longest
 
-" --- Busca ---
+" --------------------------------
+" Busca
+" --------------------------------
 set incsearch
 set hlsearch
 set ignorecase
 set smartcase
 
-" --- Comportamento do Editor ---
+" --------------------------------
+" Comportamento do Editor
+" --------------------------------
 set hidden
 set nobackup
 set noswapfile
@@ -42,35 +54,39 @@ set whichwrap+=<,>,h,l,[,]
 set mouse=a
 set clipboard^=unnamed,unnamedplus
 
-" --- Indentação (Padrão 4 espaços) ---
+" --------------------------------
+" Indentacao
+" --------------------------------
 set tabstop=4
 set softtabstop=4
 set shiftwidth=4
 set noexpandtab
 set autoindent
 
-" --- Cores ---
+" --------------------------------
+" Cores
+" --------------------------------
 if (has("termguicolors"))
     set termguicolors
 endif
 set background=dark
 
-" }}}
-
-
-" ============================================================================
-"  PLUGINS (Vim-Plug)
-" ============================================================================ {{{
-
+" ================================
+" PLUGINS
+" ================================
 if exists('*plug#begin')
     call plug#begin()
 
-        " --- Interface ---
+        " --------------------------------
+        " Interface
+        " --------------------------------
         Plug 'ryanoasis/vim-devicons'
         Plug 'tomasiser/vim-code-dark'
         Plug 'vim-airline/vim-airline'
 
-        " --- Ferramentas ---
+        " --------------------------------
+        " Ferramentas
+        " --------------------------------
         Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
         Plug 'junegunn/fzf.vim'
         Plug 'preservim/nerdtree'
@@ -78,10 +94,14 @@ if exists('*plug#begin')
         Plug 'tpope/vim-surround'
         Plug 'vim-scripts/Tagbar'
 
-        " --- Linguagens (Geral) ---
+        " --------------------------------
+        " Linguagens
+        " --------------------------------
         Plug 'sheerun/vim-polyglot'
 
-        " --- Assembly (Específico) ---
+        " --------------------------------
+        " Assembly
+        " --------------------------------
         Plug 'GabrielFrigo4/fasm.vim'
         Plug 'kylelaker/riscv.vim'
         Plug 'ARM9/arm-syntax-vim'
@@ -89,57 +109,65 @@ if exists('*plug#begin')
     call plug#end()
 endif
 
-" }}}
-
-
-" ============================================================================
-"  MAPEAMENTOS
-" ============================================================================ {{{
-
+" ================================
+" MAPEAMENTOS
+" ================================
 let mapleader="\\"
 
-" --- Navegação de Janelas ---
+" --------------------------------
+" Navegacao de Janelas
+" --------------------------------
 nnoremap <tab> :wincmd w<CR>
 nnoremap ; :wincmd w<CR>
 nnoremap <M-]> :wincmd w<CR>
 
-" --- NERDTree ---
+" --------------------------------
+" NERDTree
+" --------------------------------
 nnoremap <C-\> :NERDTreeToggle<CR>
 nnoremap , :NERDTreeToggle<CR>
 nnoremap <M-[> :NERDTreeToggle<CR>
 
-" --- FZF (Busca) ---
+" --------------------------------
+" FZF
+" --------------------------------
 nnoremap <C-f> :Files<CR>
 nnoremap <C-g> :Rg<CR>
 
-" --- Utilitários ---
+" --------------------------------
+" Utilitarios
+" --------------------------------
 nnoremap <leader><space> :nohlsearch<CR>
 nnoremap <expr> <Backspace> col('.') == 1 ? 'kgJ' : 'X'
 
-" }}}
+" ================================
+" CUSTOMIZACAO & FILETYPES
+" ================================
 
-
-" ============================================================================
-"  CUSTOMIZAÇÃO & FILETYPES
-" ============================================================================ {{{
-
-" --- Tema ---
+" --------------------------------
+" Tema
+" --------------------------------
 silent! colorscheme codedark
 
-" --- Estilo do Cursor ---
+" --------------------------------
+" Estilo do Cursor
+" --------------------------------
 au VimEnter,VimResume * set guicursor=n-c:block,i-ci-ve:ver25,r-cr:hor10,o:hor50,v:hor10,a:blinkwait500-blinkoff500-blinkon500-Cursor/lCursor
 au VimLeave,VimSuspend * set guicursor=
 let &t_SI = "\<Esc>[5 q"
 let &t_SR = "\<Esc>[3 q"
 let &t_EI = "\<Esc>[1 q"
 
-" --- ManPages ---
+" --------------------------------
+" ManPages
+" --------------------------------
 runtime! ftplugin/man.vim
 
-" --- Assembly Configuration ---
+" --------------------------------
+" Assembly
+" --------------------------------
 augroup AssemblyConfig
     autocmd!
-    " Definições de Extensão
     autocmd BufNewFile,BufRead *.riscv,*.rinc,*.RISCV,*.RINC set filetype=riscv
     autocmd BufNewFile,BufRead *.arm,*.ainc,*.ARM,*.AINC     set filetype=arm
     autocmd BufNewFile,BufRead *.x86,*.x64,*.xinc            set filetype=nasm
@@ -147,9 +175,6 @@ augroup AssemblyConfig
     autocmd BufNewFile,BufRead *.masm,*.minc                 set filetype=masm
     autocmd BufNewFile,BufRead *.gas,*.ginc                  set filetype=asm
 
-    " Formatação Unificada
     autocmd FileType asm,nasm,fasm,masm,riscv,arm,c,cpp,rust,go,python,lua
         \ setlocal tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab autoindent
 augroup END
-
-" }}}
