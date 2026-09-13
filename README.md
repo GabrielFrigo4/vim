@@ -81,18 +81,16 @@ Remove-Item -Recurse -Force "$HOME\vimfiles\.git*", "$HOME\vimfiles\.agents", "$
 
 ---
 
-### ⚙️ Integração com o Universal Environment (Submódulo)
+### ⚙️ Integração com o Universal Environment
 
-Se você já utiliza o orquestrador [Universal Environment](https://github.com/GabrielFrigo4/environment):
+Quando operado a partir do [Universal Environment](https://github.com/GabrielFrigo4/environment):
 
 ```sh
-# Sincronização automática via Profile
-make sync
+# Atualizar a suíte de editores com o upstream
+make uped
 
-# Ou criação manual de links
-ln -sf "$(pwd)/vimrc" "${HOME}/.vimrc"
-ln -sf "$(pwd)" "${HOME}/.vim"
-ln -sf "$(pwd)" "${HOME}/vimfiles"
+# Implantar o repositório no destino canônico (~/vimfiles e ~/.vimrc)
+make deploy
 ```
 
 ---
