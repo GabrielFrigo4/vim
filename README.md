@@ -1,4 +1,4 @@
-# 📜 Vim Configuration (vimfiles)
+# 📜 Universal Vim Configuration
 
 > Configuração clássica, resiliente e de alta portabilidade do editor Vim com Vim-Plug e tema CodeDark.
 
@@ -10,7 +10,7 @@
 
 ## 🧭 Visão Geral
 
-Este repositório contém a configuração oficial do **Vim** (`vimfiles`) de Gabriel Frigo, integrando a **Suíte de Editores** do [Universal Environment](https://github.com/GabrielFrigo4/environment). Projetado com foco em:
+Este repositório contém a configuração oficial do **Vim** de Gabriel Frigo, integrando a **Suíte de Editores** do [Universal Environment](https://github.com/GabrielFrigo4/environment). Projetado com foco em:
 
 - **Onipresença UNIX:** Funciona em qualquer terminal, servidor headless ou estação de trabalho gráfica.
 - **Fail-Safe Startup:** Detecção dinâmica de `runtimepath` e inicialização limpa sem warnings caso plugins externos ainda não estejam instalados.
@@ -33,19 +33,71 @@ Este repositório contém a configuração oficial do **Vim** (`vimfiles`) de Ga
 
 ## 🚀 Instalação e Uso Rápido
 
-### 1. Vincular via Profile
+### Opção A — Modo Versionado (Recomendado para Manutenção)
+
+Clona o repositório diretamente no destino canônico com controle de versão Git ativo, permitindo atualizações automáticas contínuas via `uped` ou `git pull`.
+
+#### 🐧 Unix (Linux, FreeBSD, macOS)
 
 ```sh
-# Sincronização automática via Universal Environment
+git clone "https://github.com/GabrielFrigo4/vim.git" "${HOME}/.vim"
+ln -sf "${HOME}/.vim/vimrc" "${HOME}/.vimrc"
+```
+
+#### 🪟 Windows (PowerShell Nativo)
+
+```powershell
+git clone "https://github.com/GabrielFrigo4/vim.git" "$HOME\vimfiles"
+```
+
+#### 🪟 Windows (MSYS2 / Git Bash)
+
+```sh
+git clone "https://github.com/GabrielFrigo4/vim.git" "${HOME}/.vim"
+ln -sf "${HOME}/.vim/vimrc" "${HOME}/.vimrc"
+```
+
+---
+
+### Opção B — Modo Standalone Limpo (Zero-Bloat / Produção)
+
+> [!TIP]
+> **Filosofia Zero-Bloat:** Ideal para servidores, contêineres ou computadores de terceiros onde o controle de versão Git e artefatos de desenvolvimento não são necessários. Clona a árvore rasa (`--depth=1`) e remove metadados (`.git*`, `.agents`, `*.md`), deixando apenas a configuração estritamente executável.
+
+#### 🐧 Unix (Linux, FreeBSD, macOS & MSYS2)
+
+```sh
+git clone --depth=1 "https://github.com/GabrielFrigo4/vim.git" "${HOME}/.vim" && \
+  ln -sf "${HOME}/.vim/vimrc" "${HOME}/.vimrc" && \
+  rm -rf "${HOME}/.vim/.git"* "${HOME}/.vim/.agents" "${HOME}/.vim/"*.md
+```
+
+#### 🪟 Windows (PowerShell)
+
+```powershell
+git clone --depth=1 "https://github.com/GabrielFrigo4/vim.git" "$HOME\vimfiles"
+Remove-Item -Recurse -Force "$HOME\vimfiles\.git*", "$HOME\vimfiles\.agents", "$HOME\vimfiles\*.md" -ErrorAction SilentlyContinue
+```
+
+---
+
+### ⚙️ Integração com o Universal Environment (Submódulo)
+
+Se você já utiliza o orquestrador [Universal Environment](https://github.com/GabrielFrigo4/environment):
+
+```sh
+# Sincronização automática via Profile
 make sync
 
 # Ou criação manual de links
 ln -sf "$(pwd)/vimrc" "${HOME}/.vimrc"
-ln -sf "$(pwd)" "${HOME}/vimfiles"
 ln -sf "$(pwd)" "${HOME}/.vim"
+ln -sf "$(pwd)" "${HOME}/vimfiles"
 ```
 
-### 2. Instalar Plugins
+---
+
+### 🔌 Instalar Plugins e Validação
 
 Abra o Vim e execute:
 
@@ -53,7 +105,7 @@ Abra o Vim e execute:
 :PlugInstall
 ```
 
-### 3. Validação Headless
+Ou valide em modo headless via CLI:
 
 ```sh
 vim -u vimrc -es -c "quit"
