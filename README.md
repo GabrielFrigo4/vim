@@ -22,13 +22,14 @@ Este repositório contém a configuração oficial do **Vim** de Gabriel Frigo, 
 
 ## 📁 Catálogo da Estrutura
 
-| Arquivo / Diretório                      | Descrição                                                     |
-| :--------------------------------------- | :------------------------------------------------------------ |
-| [`vimrc`](vimrc)                         | Configuração principal do Vim com opções, plugins e atalhos   |
-| [`autoload/plug.vim`](autoload/plug.vim) | Gerenciador de plugins Vim-Plug embutido                      |
-| [`AGENTS.md`](AGENTS.md)                 | Briefing arquitetural para agentes de inteligência artificial |
-| [`PRINCIPLES.md`](PRINCIPLES.md)         | Os 18 Princípios de Engenharia UNIX + Clean Code              |
-| [`ENVIRONMENT.md`](ENVIRONMENT.md)       | Manifesto do ecossistema Universal Environment                |
+| Arquivo / Diretório                      | Descrição                                                         |
+| :--------------------------------------- | :---------------------------------------------------------------- |
+| [`vim.sh`](vim.sh)                       | Interface unificada de componente (CLI para test, doctor, update) |
+| [`vimrc`](vimrc)                         | Configuração principal do Vim com opções, plugins e atalhos       |
+| [`autoload/plug.vim`](autoload/plug.vim) | Gerenciador de plugins Vim-Plug embutido                          |
+| [`AGENTS.md`](AGENTS.md)                 | Briefing arquitetural para agentes de inteligência artificial     |
+| [`PRINCIPLES.md`](PRINCIPLES.md)         | Os 18 Princípios de Engenharia UNIX + Clean Code                  |
+| [`ENVIRONMENT.md`](ENVIRONMENT.md)       | Manifesto do ecossistema Universal Environment                    |
 
 ---
 
