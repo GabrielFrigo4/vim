@@ -3,8 +3,9 @@
 > Configuração clássica, resiliente e de alta portabilidade do editor Vim com Vim-Plug e tema CodeDark.
 
 [![Environment](https://img.shields.io/badge/🏛️_Environment-Hub-blue)](https://github.com/GabrielFrigo4/environment)
-[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Vimscript](https://img.shields.io/badge/script-Vimscript-blue)](vimrc)
+[![Vim](https://img.shields.io/badge/Vim-8.2%2B-green?logo=vim&logoColor=white)](https://www.vim.org/)
+[![Vimscript](https://img.shields.io/badge/Script-Vimscript-blue?logo=vim&logoColor=white)](vimrc)
+[![License](https://img.shields.io/badge/License-MIT-green?logo=open-source-initiative&logoColor=white)](LICENSE)
 
 ---
 
