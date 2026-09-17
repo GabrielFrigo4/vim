@@ -27,6 +27,7 @@ O repositório `vimfiles` provê uma configuração de alta compatibilidade e ro
 2. **Onipresença UNIX:** A configuração deve funcionar perfeitamente em servidores remotos, terminais sem suporte gráfico e máquinas virtuais limpas.
 3. **Zero Comentários Narrativos:** Mantenha a arquitetura de comentários em 3 camadas (`"` e réguas de 64/32 caracteres).
 4. **Zero Secrets:** Nunca armazenar credenciais ou tokens neste repositório.
+5. **Hermetismo de Produção & Invariante `rm -rf .agents`:** Repositório 100% autônomo. Zero acoplamento de configurações a `.agents/` ou `skills/` (o Vim opera plenamente se `.agents/` for deletado).
 
 ---
 
