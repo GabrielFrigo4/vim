@@ -14,7 +14,7 @@ filetype plugin indent on
 syntax on
 set encoding=UTF-8
 
-let s:vim_dir = expand('<sfile>:p:h')
+let s:vim_dir = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 if stridx(&runtimepath, s:vim_dir) == -1
     let &runtimepath = s:vim_dir . ',' . &runtimepath . ',' . s:vim_dir . '/after'
 endif
