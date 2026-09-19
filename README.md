@@ -87,11 +87,15 @@ Remove-Item -Recurse -Force "$HOME\vimfiles\.git*", "$HOME\vimfiles\.agents", "$
 
 Quando operado a partir do [Universal Environment](https://github.com/GabrielFrigo4/environment):
 
-```sh
-# Atualizar a suíte de editores com o upstream
-make uped
+Atualizar a suíte de editores com o upstream
 
-# Implantar o repositório no destino canônico (~/vimfiles e ~/.vimrc)
+```sh
+make uped
+```
+
+Implantar o repositório no destino canônico (~/vimfiles e ~/.vimrc)
+
+```sh
 make deploy
 ```
 
