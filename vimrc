@@ -13,7 +13,6 @@ set nocompatible
 filetype plugin indent on
 syntax on
 set encoding=UTF-8
-set rtp+=~/.vim
 
 let s:vim_dir = expand('<sfile>:p:h')
 if stridx(&runtimepath, s:vim_dir) == -1
