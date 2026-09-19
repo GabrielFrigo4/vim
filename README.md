@@ -6,6 +6,7 @@
 [![Vim](https://img.shields.io/badge/Vim-8.2%2B-green?logo=vim&logoColor=white)](https://www.vim.org/)
 [![Vimscript](https://img.shields.io/badge/Script-Vimscript-blue?logo=vim&logoColor=white)](vimrc)
 [![License](https://img.shields.io/badge/License-MIT-green?logo=open-source-initiative&logoColor=white)](LICENSE)
+[![Roadmap](https://img.shields.io/badge/🗺️_Roadmap-TODO.md-teal)](TODO.md)
 
 ---
 
@@ -24,6 +25,7 @@ Este repositório contém a configuração oficial do **Vim** de Gabriel Frigo, 
 
 | Arquivo / Diretório                      | Descrição                                                         |
 | :--------------------------------------- | :---------------------------------------------------------------- |
+| [`TODO.md`](TODO.md)                     | Roadmap estratégico, matriz de status e backlog de evolução       |
 | [`vim.sh`](vim.sh)                       | Interface unificada de componente (CLI para test, doctor, update) |
 | [`vimrc`](vimrc)                         | Configuração principal do Vim com opções, plugins e atalhos       |
 | [`autoload/plug.vim`](autoload/plug.vim) | Gerenciador de plugins Vim-Plug embutido                          |
