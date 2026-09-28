@@ -32,7 +32,7 @@ Este repositório contém a configuração oficial do **Vim** de Gabriel Frigo, 
 | [`vimrc`](vimrc)                         | Configuração principal do Vim com opções, plugins e atalhos       |
 | [`autoload/plug.vim`](autoload/plug.vim) | Gerenciador de plugins Vim-Plug embutido                          |
 | [`AGENTS.md`](AGENTS.md)                 | Briefing arquitetural para agentes de inteligência artificial     |
-| [`PRINCIPLES.md`](PRINCIPLES.md)         | Os 18 Princípios de Engenharia UNIX + Clean Code                  |
+| [`PRINCIPLES.md`](PRINCIPLES.md)         | Os 22 Princípios de Engenharia UNIX + Clean Code                  |
 | [`ENVIRONMENT.md`](ENVIRONMENT.md)       | Manifesto do ecossistema Universal Environment                    |
 
 ---

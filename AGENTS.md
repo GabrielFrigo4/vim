@@ -16,7 +16,7 @@ O repositório `vimfiles` provê uma configuração de alta compatibilidade e ro
 - **`autoload/plug.vim`**: Gerenciador de plugins Vim-Plug embutido para zero-friction bootstrap.
 - **`README.md`**: Guia institucional e instruções de symlink.
 - **`AGENTS.md`**: Briefing para agentes de IA.
-- **`PRINCIPLES.md`**: Os 18 Princípios de Engenharia UNIX + Clean Code sincronizados.
+- **`PRINCIPLES.md`**: Os 22 Princípios de Engenharia UNIX + Clean Code sincronizados.
 - **`ENVIRONMENT.md`**: Manifesto do ecossistema sincronizado.
 
 ---
@@ -60,7 +60,7 @@ Se durante a execução de qualquer tarefa (seja criação de novas features, co
 Antes de qualquer modificação neste ecossistema, consulte:
 
 - **[ENVIRONMENT.md](ENVIRONMENT.md)**: Arquitetura global do ecossistema
-- **[PRINCIPLES.md](PRINCIPLES.md)**: Os 21 Princípios de Engenharia UNIX + Clean Code
+- **[PRINCIPLES.md](PRINCIPLES.md)**: Os 22 Princípios de Engenharia UNIX + Clean Code
 - **[TODO.md](TODO.md)**: Planejamento estratégico e matriz de status operacional
 - **[.agents/rules/principles.md](.agents/rules/principles.md)**: Regras específicas para o Vim
 - **[.agents/skills/](.agents/skills/)**: Runbooks operacionais do Vim
