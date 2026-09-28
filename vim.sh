@@ -6,6 +6,17 @@ set -eu
 
 _VIM_ROOT="$(cd "$(dirname "$0")" && pwd)"
 
+_self_heal_perms() {
+	if [ -d "${_VIM_ROOT}/.git" ] && command -v git > "/dev/null" 2>&1; then
+		git -C "${_VIM_ROOT}" config core.hooksPath .githooks 2> "/dev/null" || true
+	fi
+	if [ -d "${_VIM_ROOT}/.githooks" ]; then
+		chmod 0755 "${_VIM_ROOT}/.githooks/"* 2> "/dev/null" || true
+	fi
+	[ -f "${_VIM_ROOT}/vim.sh" ] && chmod 0755 "${_VIM_ROOT}/vim.sh" 2> "/dev/null" || true
+}
+_self_heal_perms
+
 _vim_help() {
 	cat <<- EOF
 		Vim — Interface Unificada de Componente

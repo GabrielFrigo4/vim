@@ -7,6 +7,7 @@
 [![Vimscript](https://img.shields.io/badge/Script-Vimscript-blue?logo=vim&logoColor=white)](vimrc)
 [![License](https://img.shields.io/badge/License-MIT-green?logo=open-source-initiative&logoColor=white)](LICENSE)
 [![Roadmap](https://img.shields.io/badge/🗺️_Roadmap-TODO.md-teal)](TODO.md)
+[![Contributing](https://img.shields.io/badge/🤝_Contributing-CONTRIBUTING.md-orange)](CONTRIBUTING.md)
 
 ---
 
@@ -26,6 +27,7 @@ Este repositório contém a configuração oficial do **Vim** de Gabriel Frigo, 
 | Arquivo / Diretório                      | Descrição                                                         |
 | :--------------------------------------- | :---------------------------------------------------------------- |
 | [`TODO.md`](TODO.md)                     | Roadmap estratégico, matriz de status e backlog de evolução       |
+| [`CONTRIBUTING.md`](CONTRIBUTING.md)     | Guia de contribuição, configuração de ganchos Git e quality gates |
 | [`vim.sh`](vim.sh)                       | Interface unificada de componente (CLI para test, doctor, update) |
 | [`vimrc`](vimrc)                         | Configuração principal do Vim com opções, plugins e atalhos       |
 | [`autoload/plug.vim`](autoload/plug.vim) | Gerenciador de plugins Vim-Plug embutido                          |
@@ -116,3 +118,17 @@ Ou valide em modo headless via CLI:
 ```sh
 vim -u vimrc -es -c "quit"
 ```
+
+---
+
+## 🚀 Setup do Projeto & Ganchos Git
+
+Para configurar o ambiente de desenvolvimento local, ativar os quality gates automáticos e validar a integridade do repositório:
+
+```sh
+make hooks   # Configura .githooks e permissões canônicas
+make test    # Valida inicialização em modo silencioso/headless
+make ci      # Bateria completa de validação local
+```
+
+> 🤝 **Instruções Detalhadas:** Consulte o [CONTRIBUTING.md](CONTRIBUTING.md) para convenções de commits, arquitetura Vimscript, Vim-Plug e quality gates.
