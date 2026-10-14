@@ -17,6 +17,12 @@ set encoding=UTF-8
 let s:is_raw_tty = ($RAW_TTY ==# '1' || $TERM ==# 'linux' || $TERM ==# 'cons25')
 let s:is_ssh = (!empty($SSH_CONNECTION) || !empty($SSH_CLIENT) || !empty($SSH_TTY))
 
+let s:is_win = has('win32') || has('win64')
+let s:user_vim_dir = s:is_win ? expand('$HOME/vimfiles') : expand('$HOME/.vim')
+if s:is_win && isdirectory(s:user_vim_dir) && stridx(&runtimepath, s:user_vim_dir) == -1
+    let &runtimepath = s:user_vim_dir . ',' . &runtimepath . ',' . s:user_vim_dir . '/after'
+endif
+
 let s:vim_dir = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 if stridx(&runtimepath, s:vim_dir) == -1
     let &runtimepath = s:vim_dir . ',' . &runtimepath . ',' . s:vim_dir . '/after'
@@ -161,6 +167,25 @@ nnoremap <C-g> :Rg<CR>
 " --------------------------------
 nnoremap <leader><space> :nohlsearch<CR>
 nnoremap <expr> <Backspace> col('.') == 1 ? 'kgJ' : 'X'
+
+" --------------------------------
+" Comentarios Nativos (Zero-Plugin)
+" --------------------------------
+function! s:ToggleComment() abort
+    let l:lead = exists('b:comment_leader') ? b:comment_leader :
+        \ (&filetype ==# 'vim' ? '" ' :
+        \ (&filetype =~# '^\(c\|cpp\|rust\|go\|javascript\|typescript\|java\)$' ? '// ' : '# '))
+    let l:line = getline('.')
+    let l:esc = escape(l:lead, '/*~')
+    if l:line =~# '^\s*' . l:esc
+        call setline('.', substitute(l:line, '^\(\s*\)' . l:esc, '\1', ''))
+    else
+        call setline('.', substitute(l:line, '^\(\s*\)', '\1' . l:lead, ''))
+    endif
+endfunction
+
+nnoremap <silent> gcc :call <SID>ToggleComment()<CR>
+vnoremap <silent> gc :<C-u>'<,'>call <SID>ToggleComment()<CR>
 
 " ================================
 " CUSTOMIZACAO & FILETYPES

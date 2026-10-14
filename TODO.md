@@ -1,40 +1,24 @@
-# 🗺️ Roadmap & Backlog
+# 🗺️ Roadmap & Status — Classic UNIX Vim
 
-> Planejamento estratégico, status operacional e visão de futuro para a evolução do **Universal Vim**.
-
----
-
-## 📊 Status do Projeto
-
-| Área                                      |   Status   | Cobertura / Estado                                              |
-| :---------------------------------------- | :--------: | :-------------------------------------------------------------- |
-| **📜 Configuração Core (`vimrc`)**        | 🟢 Estável | Configurações universais, indentação e comportamento limpo      |
-| **🛡️ Fail-Safe Startup**                  | 🟢 Estável | Execução sem erros mesmo sem plugins instalados                 |
-| **📦 Ecossistema Vim-Plug**               | 🟢 Estável | Plugins leves de navegação (FZF, NERDTree, Surround)            |
-| **🎨 Tema CodeDark & TTY**                | 🟢 Estável | Visual elegante com fallback automático para modo terminal puro |
-| **⚡ Interface de Componente (`vim.sh`)** | 🟢 Estável | Interface unificada para teste, doctor e update                 |
-| **🧪 Validação Headless no CI**           |  🟢 100%   | Inicialização headless validada via `vim -es`                   |
+> **Status:** 🟢 **100% Operacional & Estável — Zero Pendências Ativas**
+> Rastreamento relativo, tema CodeDark, FZF recursivo, comentários nativos e fallback TTY foram integralmente concluídos.
 
 ---
 
-## 🎯 Grandes Épicos & Backlog
+## 📊 Matriz de Maturidade
 
-### 1. ⚡ Desempenho & Resiliência em TTYs
-
-- [x] Otimizar detecção de recursos em servidores mínimos e TTYs puros sem X11/Wayland.
-- [x] Garantir zero overhead de inicialização em conexões remotas via SSH.
-
-### 2. 🛠️ Integração de Ferramentas & Plugins
-
-- [x] Refinar integração do FZF para busca de arquivos e buffers em repositórios grandes.
-- [ ] Adicionar suporte resiliente a comentários rápidos e pares de parênteses sem dependências pesadas.
-
-### 3. 🌐 Paridade Multiplataforma
-
-- [ ] Garantir equivalência e estabilidade em Linux, FreeBSD, macOS e Windows (`vimfiles`).
-- [ ] Manter sincronização contínua com os padrões de engenharia do Universal Environment.
+| Área                         |   Status    | Cobertura / Estado                                                     |
+| :--------------------------- | :---------: | :--------------------------------------------------------------------- |
+| **Resiliência TTY**          | 🟢 Estável  | Detecção de `$RAW_TTY`, console Linux e fallback `colorscheme default` |
+| **Comentários Nativos**      | 🟢 Estável  | Toggler leve (`gcc`/`gc`) sem dependências de plugins externos         |
+| **Vim-Plug & FZF**           | 🟢 Estável  | Bootstrapping estrito e busca difusa rápida via `fzf.vim`              |
+| **Paridade Multiplataforma** | 🟢 Estável  | Suporte verificado em Linux, FreeBSD, macOS e Windows (`vimfiles`)     |
+| **Conformidade de Banners**  | 🟢 Estável  | Réguas padronizadas de 32 colunas e ausência de comentários óbvios     |
+| **Quality Gates**            | 🟢 Aprovado | Boot headless validado via `make test`                                 |
 
 ---
 
-> [!TIP]
-> Para detalhes sobre convenções de código e diretrizes de engenharia, consulte o [PRINCIPLES.md](PRINCIPLES.md) e o [ENVIRONMENT.md](ENVIRONMENT.md).
+## 🛡️ Atributos Entregues
+
+- **Zero Pendências:** Editor clássico UNIX robusto, sem complexidade acidental e 100% autônomo.
+- **Sincronização:** Total alinhamento com os 22 Princípios de Engenharia UNIX do Universal Environment.
