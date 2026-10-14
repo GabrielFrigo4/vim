@@ -14,6 +14,9 @@ filetype plugin indent on
 syntax on
 set encoding=UTF-8
 
+let s:is_raw_tty = ($RAW_TTY ==# '1' || $TERM ==# 'linux' || $TERM ==# 'cons25')
+let s:is_ssh = (!empty($SSH_CONNECTION) || !empty($SSH_CLIENT) || !empty($SSH_TTY))
+
 let s:vim_dir = fnamemodify(resolve(expand('<sfile>:p')), ':h')
 if stridx(&runtimepath, s:vim_dir) == -1
     let &runtimepath = s:vim_dir . ',' . &runtimepath . ',' . s:vim_dir . '/after'
@@ -64,9 +67,9 @@ set noexpandtab
 set autoindent
 
 " --------------------------------
-" Cores
+" Cores & TTY Fallback
 " --------------------------------
-if (has("termguicolors"))
+if has('termguicolors') && !s:is_raw_tty
     set termguicolors
 endif
 set background=dark
@@ -78,14 +81,16 @@ if exists('*plug#begin')
     call plug#begin()
 
         " --------------------------------
-        " Interface
+        " Interface (Resiliente)
         " --------------------------------
-        Plug 'ryanoasis/vim-devicons'
+        if !s:is_raw_tty
+            Plug 'ryanoasis/vim-devicons'
+            Plug 'vim-airline/vim-airline'
+        endif
         Plug 'tomasiser/vim-code-dark'
-        Plug 'vim-airline/vim-airline'
 
         " --------------------------------
-        " Ferramentas
+        " Ferramentas & FZF
         " --------------------------------
         Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
         Plug 'junegunn/fzf.vim'
@@ -95,13 +100,9 @@ if exists('*plug#begin')
         Plug 'vim-scripts/Tagbar'
 
         " --------------------------------
-        " Linguagens
+        " Linguagens & Sintaxe
         " --------------------------------
         Plug 'sheerun/vim-polyglot'
-
-        " --------------------------------
-        " Assembly
-        " --------------------------------
         Plug 'GabrielFrigo4/fasm.vim'
         Plug 'kylelaker/riscv.vim'
         Plug 'ARM9/arm-syntax-vim'
@@ -110,7 +111,7 @@ if exists('*plug#begin')
 endif
 
 " ================================
-" MAPEAMENTOS
+" MAPEAMENTOS & INTEGRACAO FZF
 " ================================
 let mapleader="\\"
 
@@ -129,9 +130,30 @@ nnoremap , :NERDTreeToggle<CR>
 nnoremap <M-[> :NERDTreeToggle<CR>
 
 " --------------------------------
-" FZF
+" FZF & Submodulos
 " --------------------------------
+if executable('rg')
+    let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
+    let g:fzf_default_command = $FZF_DEFAULT_COMMAND
+elseif executable('fd')
+    let $FZF_DEFAULT_COMMAND = 'fd --type f --hidden --follow --exclude .git'
+    let g:fzf_default_command = $FZF_DEFAULT_COMMAND
+else
+    let $FZF_DEFAULT_COMMAND = 'git ls-files --recurse-submodules --cached --others --exclude-standard 2>/dev/null || find . -type f'
+    let g:fzf_default_command = $FZF_DEFAULT_COMMAND
+endif
+
+let g:fzf_action = {
+    \ 'ctrl-t': 'tab split',
+    \ 'ctrl-x': 'split',
+    \ 'ctrl-v': 'vsplit' }
+
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.7 } }
+let g:fzf_preview_window = ['right:50%:hidden', '?']
+
+nnoremap <C-p> :Files<CR>
 nnoremap <C-f> :Files<CR>
+nnoremap <C-b> :Buffers<CR>
 nnoremap <C-g> :Rg<CR>
 
 " --------------------------------
@@ -145,9 +167,17 @@ nnoremap <expr> <Backspace> col('.') == 1 ? 'kgJ' : 'X'
 " ================================
 
 " --------------------------------
-" Tema
+" Tema & Fallback
 " --------------------------------
-silent! colorscheme codedark
+if s:is_raw_tty
+    silent! colorscheme default
+else
+    silent! colorscheme codedark
+endif
+
+if s:is_ssh || s:is_raw_tty
+    let g:airline_powerline_fonts = 0
+endif
 
 " --------------------------------
 " Estilo do Cursor

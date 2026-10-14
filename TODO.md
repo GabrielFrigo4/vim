@@ -21,12 +21,12 @@
 
 ### 1. ⚡ Desempenho & Resiliência em TTYs
 
-- [ ] Otimizar detecção de recursos em servidores mínimos e TTYs puros sem X11/Wayland.
-- [ ] Garantir zero overhead de inicialização em conexões remotas via SSH.
+- [x] Otimizar detecção de recursos em servidores mínimos e TTYs puros sem X11/Wayland.
+- [x] Garantir zero overhead de inicialização em conexões remotas via SSH.
 
 ### 2. 🛠️ Integração de Ferramentas & Plugins
 
-- [ ] Refinar integração do FZF para busca de arquivos e buffers em repositórios grandes.
+- [x] Refinar integração do FZF para busca de arquivos e buffers em repositórios grandes.
 - [ ] Adicionar suporte resiliente a comentários rápidos e pares de parênteses sem dependências pesadas.
 
 ### 3. 🌐 Paridade Multiplataforma
