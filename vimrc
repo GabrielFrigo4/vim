@@ -14,7 +14,7 @@ filetype plugin indent on
 syntax on
 set encoding=UTF-8
 
-let s:is_raw_tty = ($RAW_TTY ==# '1' || $TERM ==# 'linux' || $TERM ==# 'cons25')
+let s:is_raw_tty = ($RAW_TTY ==# '1' || $TERM ==# 'linux' || $TERM ==# 'cons25' || $TERM =~# '^vt[0-9]' || (empty($DISPLAY) && empty($WAYLAND_DISPLAY) && empty($SSH_CONNECTION) && empty($SSH_TTY) && !empty($TERM) && $TERM !~? 'xterm-256color|alacritty|kitty|foot|wezterm|ghostty'))
 let s:is_ssh = (!empty($SSH_CONNECTION) || !empty($SSH_CLIENT) || !empty($SSH_TTY))
 
 let s:is_win = has('win32') || has('win64')
@@ -61,6 +61,9 @@ set nowrap
 set backspace=indent,eol,start
 set whichwrap+=<,>,h,l,[,]
 set mouse=a
+if has('mouse_sgr')
+    set ttymouse=sgr
+endif
 set clipboard^=unnamed,unnamedplus
 
 " --------------------------------
@@ -75,8 +78,15 @@ set autoindent
 " --------------------------------
 " Cores & TTY Fallback
 " --------------------------------
-if has('termguicolors') && !s:is_raw_tty
-    set termguicolors
+if s:is_raw_tty
+    if has('termguicolors')
+        set notermguicolors
+    endif
+    set t_Co=16
+else
+    if has('termguicolors')
+        set termguicolors
+    endif
 endif
 set background=dark
 
