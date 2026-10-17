@@ -211,9 +211,20 @@ au VimEnter,VimResume * set guicursor=n-c:block,i-ci-ve:ver25,r-cr:hor10,o:hor50
 au VimLeave,VimSuspend * set guicursor=
 if $TERM ==# 'linux'
     let &t_SI = "\<Esc>[?2c"
-    let &t_SR = "\<Esc>[?2c"
+    let &t_SR = "\<Esc>[?4c"
     let &t_EI = "\<Esc>[?6c"
     let &t_te = "\<Esc>[?6c"
+    if exists('##ModeChanged') && exists('*echoraw')
+        augroup LinuxTTYCursor
+            autocmd!
+            autocmd ModeChanged *:i* call echoraw("\<Esc>[?2c")
+            autocmd ModeChanged *:c* call echoraw("\<Esc>[?3c")
+            autocmd ModeChanged *:[rR]* call echoraw("\<Esc>[?4c")
+            autocmd ModeChanged *:[vV\x16sS\x13]* call echoraw("\<Esc>[?5c")
+            autocmd ModeChanged *:n* call echoraw("\<Esc>[?6c")
+            autocmd VimLeave,VimSuspend * call echoraw("\<Esc>[?6c")
+        augroup END
+    endif
 else
     let &t_SI = "\<Esc>[5 q"
     let &t_SR = "\<Esc>[3 q"
