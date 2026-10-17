@@ -209,9 +209,16 @@ endif
 " --------------------------------
 au VimEnter,VimResume * set guicursor=n-c:block,i-ci-ve:ver25,r-cr:hor10,o:hor50,v:hor10,a:blinkwait500-blinkoff500-blinkon500-Cursor/lCursor
 au VimLeave,VimSuspend * set guicursor=
-let &t_SI = "\<Esc>[5 q"
-let &t_SR = "\<Esc>[3 q"
-let &t_EI = "\<Esc>[1 q"
+if $TERM ==# 'linux'
+    let &t_SI = "\<Esc>[?2c"
+    let &t_SR = "\<Esc>[?2c"
+    let &t_EI = "\<Esc>[?6c"
+    let &t_te = "\<Esc>[?6c"
+else
+    let &t_SI = "\<Esc>[5 q"
+    let &t_SR = "\<Esc>[3 q"
+    let &t_EI = "\<Esc>[1 q"
+endif
 
 " --------------------------------
 " ManPages
