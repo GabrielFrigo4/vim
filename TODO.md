@@ -7,14 +7,14 @@
 
 ## 📊 Matriz de Maturidade
 
-| Área                         |   Status    | Cobertura / Estado                                                     |
-| :--------------------------- | :---------: | :--------------------------------------------------------------------- |
-| **Resiliência TTY**          | 🟢 Estável  | Detecção de `$RAW_TTY`, console Linux e fallback `colorscheme default` |
-| **Comentários Nativos**      | 🟢 Estável  | Toggler leve (`gcc`/`gc`) sem dependências de plugins externos         |
-| **Vim-Plug & FZF**           | 🟢 Estável  | Bootstrapping estrito e busca difusa rápida via `fzf.vim`              |
-| **Paridade Multiplataforma** | 🟢 Estável  | Suporte verificado em Linux, FreeBSD, macOS e Windows (`vimfiles`)     |
-| **Conformidade de Banners**  | 🟢 Estável  | Réguas padronizadas de 32 colunas e ausência de comentários óbvios     |
-| **Quality Gates**            | 🟢 Aprovado | Boot headless validado via `make test`                                 |
+| Área                         |   Status    | Cobertura / Estado                                                                       |
+| :--------------------------- | :---------: | :--------------------------------------------------------------------------------------- |
+| **Resiliência TTY & Mouse**  | 🟢 Estável  | Detecção de `$RAW_TTY`, console Linux/FreeBSD, fallback `default` e mouse `gpm`/`moused` |
+| **Comentários Nativos**      | 🟢 Estável  | Toggler leve (`gcc`/`gc`) sem dependências de plugins externos                           |
+| **Vim-Plug & FZF**           | 🟢 Estável  | Bootstrapping estrito e busca difusa rápida via `fzf.vim`                                |
+| **Paridade Multiplataforma** | 🟢 Estável  | Suporte verificado em Linux, FreeBSD, macOS e Windows (`vimfiles`)                       |
+| **Conformidade de Banners**  | 🟢 Estável  | Réguas padronizadas de 32 colunas e ausência de comentários óbvios                       |
+| **Quality Gates**            | 🟢 Aprovado | Boot headless validado via `make test`                                                   |
 
 ---
 
