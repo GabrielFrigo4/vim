@@ -211,6 +211,7 @@ if s:is_raw_tty
     if !exists('g:colors_name') || g:colors_name !=# 'habamax'
         silent! colorscheme default
     endif
+    silent! highlight Visual ctermfg=109 ctermbg=234 cterm=reverse
 else
     silent! colorscheme codedark
 endif
@@ -256,9 +257,23 @@ if $TERM ==# 'linux'
         augroup END
     endif
 else
-    let &t_SI = "\<Esc>[6 q"
-    let &t_SR = "\<Esc>[4 q"
-    let &t_EI = "\<Esc>[2 q"
+    let &t_SI = "\<Esc>[5 q"
+    let &t_SR = "\<Esc>[3 q"
+    let &t_EI = "\<Esc>[1 q"
+    let &t_te = "\<Esc>[0 q"
+    if exists('##ModeChanged') && exists('*echoraw')
+        augroup PTYCursor
+            autocmd!
+            autocmd VimEnter * call echoraw("\<Esc>[1 q")
+            autocmd ModeChanged *:[vV\x16sS\x13]*,*:v*,*:V* call echoraw("\<Esc>[1 q")
+            autocmd ModeChanged *:n* call echoraw("\<Esc>[1 q")
+            if exists('##CmdlineEnter')
+                autocmd CmdlineEnter * call echoraw("\<Esc>[3 q")
+                autocmd CmdlineLeave * call echoraw("\<Esc>[1 q")
+            endif
+            autocmd VimLeave,VimSuspend * call echoraw("\<Esc>[0 q")
+        augroup END
+    endif
 endif
 
 

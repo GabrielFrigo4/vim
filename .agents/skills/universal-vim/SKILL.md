@@ -20,7 +20,7 @@ Este runbook orienta desenvolvedores e agentes de inteligência artificial na ma
     - `autoload/plug.vim`: Gerenciador autônomo versionado no próprio repositório.
 4. **Zero Symlinks Frágeis:** O repositório opera clonado como árvore canônica em `${HOME}/.vim` (com `${HOME}/.vimrc` apontando canonicamente para `${HOME}/.vim/vimrc`) ou `%USERPROFILE%\vimfiles` no Windows.
 5. **Ergonomia de Cursor Adaptativa (PTY vs Linux TTY):**
-    - **Em PTY Gráfico:** Utiliza `guicursor` nativo com geometria semântica rica (`n-v-sm:block,i-ci:ver25,c:hor20,r-cr:hor50,o:hor50,ve:ver35`) e fallback DECSCUSR (`t_SI = \e[6 q`, `t_SR = \e[4 q`, `t_EI = \e[2 q`).
+    - **Em PTY Gráfico:** Utiliza sequências DECSCUSR piscantes canônicas em paridade com o NeoVim (`t_SI = \e[5 q`, `t_SR = \e[3 q`, `t_EI = \e[1 q`, `t_te = \e[0 q`) com grupo `PTYCursor` no `ModeChanged` para modo Visual (`\e[1 q`) e Linha de Comando (`\e[3 q`).
     - **Em Linux Console TTY (`$TERM == 'linux'`):** Alavanca os 5 formatos nativos de hardware do kernel Linux VT via escape sequences privativas CSI `\e[?<N>c`:
         - Modo Inserção (`*:i*`): `\e[?2c` (Underline na base)
         - Modo Linha de Comando (`*:c*`, `CmdlineEnter`): `\e[?3c` (Lower Third - 1/3 inferior)
