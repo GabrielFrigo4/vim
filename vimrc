@@ -242,7 +242,7 @@ if $TERM ==# 'linux'
             autocmd ModeChanged *:c* call echoraw("\<Esc>[?3c")
             autocmd ModeChanged *:r*,*:R* call echoraw("\<Esc>[?4c")
             autocmd ModeChanged *:o* call echoraw("\<Esc>[?4c")
-            execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>[?5c\")"
+            execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>[?6c\")"
             autocmd ModeChanged *:n* call echoraw("\<Esc>[?6c")
             if exists('##CmdlineEnter')
                 autocmd CmdlineEnter * call echoraw("\<Esc>[?3c")
