@@ -210,8 +210,8 @@ if s:is_raw_tty
     silent! colorscheme habamax
     if !exists('g:colors_name') || g:colors_name !=# 'habamax'
         silent! colorscheme default
-        silent! highlight Visual cterm=reverse ctermfg=109 ctermbg=234
     endif
+    silent! highlight Visual cterm=NONE ctermbg=238 ctermfg=15
 else
     silent! colorscheme codedark
 endif
