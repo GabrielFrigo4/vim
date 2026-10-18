@@ -246,8 +246,7 @@ if $TERM ==# 'linux'
             autocmd ModeChanged *:c* call echoraw("\<Esc>[?3c")
             autocmd ModeChanged *:r*,*:R* call echoraw("\<Esc>[?4c")
             autocmd ModeChanged *:o* call echoraw("\<Esc>[?4c")
-            autocmd ModeChanged *:[vV\x16sS\x13]*,*:v*,*:V* call echoraw("\<Esc>[?5c")
-            execute "autocmd ModeChanged *:\<C-V\>*,*:\<C-S\>* call echoraw(\"\\<Esc>[?5c\")"
+            execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>[?5c\")"
             autocmd ModeChanged *:n* call echoraw("\<Esc>[?6c")
             if exists('##CmdlineEnter')
                 autocmd CmdlineEnter * call echoraw("\<Esc>[?3c")
@@ -265,7 +264,7 @@ else
         augroup PTYCursor
             autocmd!
             autocmd VimEnter * call echoraw("\<Esc>[1 q")
-            autocmd ModeChanged *:[vV\x16sS\x13]*,*:v*,*:V* call echoraw("\<Esc>[1 q")
+            execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>[1 q\")"
             autocmd ModeChanged *:n* call echoraw("\<Esc>[1 q")
             if exists('##CmdlineEnter')
                 autocmd CmdlineEnter * call echoraw("\<Esc>[5 q")
@@ -275,7 +274,6 @@ else
         augroup END
     endif
 endif
-
 
 " --------------------------------
 " ManPages
