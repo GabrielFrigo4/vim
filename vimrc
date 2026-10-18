@@ -241,8 +241,12 @@ if $TERM ==# 'linux'
             autocmd ModeChanged *:i* call echoraw("\<Esc>[?2c")
             autocmd ModeChanged *:c* call echoraw("\<Esc>[?3c")
             autocmd ModeChanged *:[rR]* call echoraw("\<Esc>[?4c")
-            autocmd ModeChanged *:[vV\x16sS\x13]* call echoraw("\<Esc>[?5c")
+            execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>[?5c\")"
             autocmd ModeChanged *:n* call echoraw("\<Esc>[?6c")
+            if exists('##CmdlineEnter')
+                autocmd CmdlineEnter * call echoraw("\<Esc>[?3c")
+                autocmd CmdlineLeave * call echoraw("\<Esc>[?6c")
+            endif
             autocmd VimLeave,VimSuspend * call echoraw("\<Esc>%G\<Esc>[?16;238;0c")
         augroup END
     endif
