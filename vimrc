@@ -222,7 +222,7 @@ endif
 if s:is_raw_tty
     set guicursor=
 else
-    au VimEnter,VimResume * set guicursor=n-c:block,i-ci-ve:ver25,r-cr:hor10,o:hor50,v:hor10,a:blinkwait500-blinkoff500-blinkon500-Cursor/lCursor
+    au VimEnter,VimResume * set guicursor=n-v-sm:block,i-ci:ver25,c:hor20,r-cr:hor50,o:hor50,ve:ver35,a:blinkwait500-blinkoff500-blinkon500-Cursor/lCursor
     au VimLeave,VimSuspend * set guicursor=
 endif
 
@@ -240,7 +240,8 @@ if $TERM ==# 'linux'
             autocmd VimEnter * call echoraw("\<Esc>[?6c")
             autocmd ModeChanged *:i* call echoraw("\<Esc>[?2c")
             autocmd ModeChanged *:c* call echoraw("\<Esc>[?3c")
-            autocmd ModeChanged *:[rR]* call echoraw("\<Esc>[?4c")
+            autocmd ModeChanged *:r*,*:R* call echoraw("\<Esc>[?4c")
+            autocmd ModeChanged *:o* call echoraw("\<Esc>[?4c")
             execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>[?5c\")"
             autocmd ModeChanged *:n* call echoraw("\<Esc>[?6c")
             if exists('##CmdlineEnter')
@@ -251,9 +252,9 @@ if $TERM ==# 'linux'
         augroup END
     endif
 else
-    let &t_SI = "\<Esc>[5 q"
-    let &t_SR = "\<Esc>[3 q"
-    let &t_EI = "\<Esc>[1 q"
+    let &t_SI = "\<Esc>[6 q"
+    let &t_SR = "\<Esc>[4 q"
+    let &t_EI = "\<Esc>[2 q"
 endif
 
 
