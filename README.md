@@ -19,6 +19,7 @@ Este repositório contém a configuração oficial do **Vim** de Gabriel Frigo, 
 - **Fail-Safe Startup:** Detecção dinâmica de `runtimepath` e inicialização limpa sem warnings caso plugins externos ainda não estejam instalados.
 - **Ecossistema Vim-Plug:** Plugins de navegação rápida (FZF, NERDTree, Surround, Visual-Multi).
 - **Tema CodeDark:** Visual escuro estilo VS Code com fallback gracioso para o tema padrão.
+- **Tipografia Homologada:** Projetado e calibrado para **`JetBrainsMono Nerd Font`** (versão 3.x+), garantindo ícones estáveis no NERDTree, statusline e navegação de tags.
 - **Ergonomia de Cursor Multi-Modo:** Adaptação dinâmica de formato em PTYs gráficos (DECSCUSR) e nos 5 modos de hardware em consoles Linux TTY (`\e[?2c` a `\e[?6c`) com auto-cura estática no encerramento (`\e%G\e[?16;238;0c`).
 
 ---
