@@ -25,7 +25,7 @@ Este runbook orienta desenvolvedores e agentes de inteligência artificial na ma
         - Modo Inserção (`*:i*`): `\e[?2c` (Underline na base)
         - Modo Linha de Comando (`*:c*`, `CmdlineEnter`): `\e[?3c` (Lower Third - 1/3 inferior)
         - Modo Substituição e Operator-Pending (`*:r*`, `*:R*`, `*:o*`): `\e[?4c` (Lower Half - metade inferior)
-        - Modo Visual (`*:v*`, `*:V*`, `*:\<C-V\>*`, `*:s*`, `*:S*`, `*:\<C-S\>*`): `\e[?5c` (Two Thirds - 2/3 inferiores)
+        - Modo Visual (`*:v*`, `*:V*`, `*:\<C-V\>*`, `*:s*`, `*:S*`, `*:\<C-S\>*`): `\e[?5c` (Two Thirds - 2/3 inferiores, com `highlight Visual cterm=NONE ctermbg=238 ctermfg=15` para eliminar o fundo ciano herdado do `habamax.vim` e prevenir inversão dupla XOR sob `fbcon`)
         - Modo Normal (`*:n*`, `CmdlineLeave`): `\e[?6c` (Full Block - bloco sólido)
         - **Sanitização de Redraw (`t_ve` / `t_vi`):** Por padrão, o terminfo `linux` associa `cnorm` (`t_ve`) a `\e[?25h\e[?0c` e `civis` (`t_vi`) a `\e[?25l\e[?1c`. O reset embutido `\e[?0c` clobberava os formatos customizados em cada refresh de tela. O Vim força `t_ve=\e[?25h`, `t_vi=\e[?25l` e `t_VS=\e[?25h`, garantindo integridade visual dos modos.
         - **Responsividade de Escape (`ttimeoutlen=50`):** Define `set ttimeout` e `set ttimeoutlen=50` eliminando o delay de 1000ms na transição entre Inserção e Normal ao pressionar `<Esc>`.
