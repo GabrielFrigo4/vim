@@ -226,7 +226,7 @@ endif
 if s:is_raw_tty
     set guicursor=
 else
-    au VimEnter,VimResume * set guicursor=n-v-sm:block,i-ci:ver25,c:hor20,r-cr:hor50,o:hor50,ve:ver35,a:blinkwait500-blinkoff500-blinkon500-Cursor/lCursor
+    au VimEnter,VimResume * set guicursor=n-v-sm:block,i-ci:ver25,c:ver25,r-cr:hor50,o:hor50,ve:ver35,a:blinkwait500-blinkoff500-blinkon500-Cursor/lCursor
     au VimLeave,VimSuspend * set guicursor=
 endif
 
@@ -268,7 +268,7 @@ else
             autocmd ModeChanged *:[vV\x16sS\x13]*,*:v*,*:V* call echoraw("\<Esc>[1 q")
             autocmd ModeChanged *:n* call echoraw("\<Esc>[1 q")
             if exists('##CmdlineEnter')
-                autocmd CmdlineEnter * call echoraw("\<Esc>[3 q")
+                autocmd CmdlineEnter * call echoraw("\<Esc>[5 q")
                 autocmd CmdlineLeave * call echoraw("\<Esc>[1 q")
             endif
             autocmd VimLeave,VimSuspend * call echoraw("\<Esc>[0 q")
