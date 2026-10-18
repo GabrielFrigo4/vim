@@ -19,6 +19,17 @@ Este runbook orienta desenvolvedores e agentes de inteligência artificial na ma
     - `vimrc`: Configuração declarativa única de opções, mapeamentos e lista de plugins.
     - `autoload/plug.vim`: Gerenciador autônomo versionado no próprio repositório.
 4. **Zero Symlinks Frágeis:** O repositório opera clonado como árvore canônica em `${HOME}/.vim` (com `${HOME}/.vimrc` apontando canonicamente para `${HOME}/.vim/vimrc`) ou `%USERPROFILE%\vimfiles` no Windows.
+5. **Ergonomia de Cursor Adaptativa (PTY vs Linux TTY):**
+    - **Em PTY Gráfico:** Utiliza escape sequences DECSCUSR (`t_SI = \e[5 q`, `t_SR = \e[3 q`, `t_EI = \e[1 q`).
+    - **Em Linux Console TTY (`$TERM == 'linux'`):** Alavanca os 5 formatos nativos de hardware do kernel Linux VT via escape sequences privativas CSI `\e[?<N>c`:
+        - Modo Inserção (`*:i*`): `\e[?2c` (Underline na base)
+        - Modo Linha de Comando (`*:c*`): `\e[?3c` (Lower Third - 1/3 inferior)
+        - Modo Substituição (`*:[rR]*`): `\e[?4c` (Lower Half - metade inferior)
+        - Modo Visual (`*:[vV\x16sS\x13]*`): `\e[?5c` (Two Thirds - 2/3 inferiores)
+        - Modo Normal (`*:n*`): `\e[?6c` (Full Block - bloco sólido)
+        - **Sanitização de Redraw (`t_ve` / `t_vi`):** Por padrão, o terminfo `linux` associa `cnorm` (`t_ve`) a `\e[?25h\e[?0c` e `civis` (`t_vi`) a `\e[?25l\e[?1c`. O reset embutido `\e[?0c` clobberava os formatos customizados em cada refresh de tela. O Vim força `t_ve=\e[?25h`, `t_vi=\e[?25l` e `t_VS=\e[?25h`, garantindo integridade visual dos modos.
+        - **Responsividade de Escape (`ttimeoutlen=50`):** Define `set ttimeout` e `set ttimeoutlen=50` eliminando o delay de 1000ms na transição entre Inserção e Normal ao pressionar `<Esc>`.
+        - Encerramento / Suspensão (`VimLeave, VimSuspend`): Emite a sequência canônica de auto-cura `\e%G\e[?16;238;0c`, restaurando o softcursor branco estático sem pisque e imune a distorções cromáticas.
 
 ---
 

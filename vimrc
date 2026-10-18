@@ -65,6 +65,8 @@ if has('mouse_sgr')
     set ttymouse=sgr
 endif
 set clipboard^=unnamed,unnamedplus
+set ttimeout
+set ttimeoutlen=50
 
 " --------------------------------
 " Indentacao
@@ -217,22 +219,31 @@ endif
 " --------------------------------
 " Estilo do Cursor
 " --------------------------------
-au VimEnter,VimResume * set guicursor=n-c:block,i-ci-ve:ver25,r-cr:hor10,o:hor50,v:hor10,a:blinkwait500-blinkoff500-blinkon500-Cursor/lCursor
-au VimLeave,VimSuspend * set guicursor=
+if s:is_raw_tty
+    set guicursor=
+else
+    au VimEnter,VimResume * set guicursor=n-c:block,i-ci-ve:ver25,r-cr:hor10,o:hor50,v:hor10,a:blinkwait500-blinkoff500-blinkon500-Cursor/lCursor
+    au VimLeave,VimSuspend * set guicursor=
+endif
+
 if $TERM ==# 'linux'
+    let &t_vi = "\<Esc>[?25l"
+    let &t_ve = "\<Esc>[?25h"
+    let &t_VS = "\<Esc>[?25h"
     let &t_SI = "\<Esc>[?2c"
     let &t_SR = "\<Esc>[?4c"
     let &t_EI = "\<Esc>[?6c"
-    let &t_te = "\<Esc>[?6c"
+    let &t_te = "\<Esc>%G\<Esc>[?16;238;0c"
     if exists('##ModeChanged') && exists('*echoraw')
         augroup LinuxTTYCursor
             autocmd!
+            autocmd VimEnter * call echoraw("\<Esc>[?6c")
             autocmd ModeChanged *:i* call echoraw("\<Esc>[?2c")
             autocmd ModeChanged *:c* call echoraw("\<Esc>[?3c")
             autocmd ModeChanged *:[rR]* call echoraw("\<Esc>[?4c")
             autocmd ModeChanged *:[vV\x16sS\x13]* call echoraw("\<Esc>[?5c")
             autocmd ModeChanged *:n* call echoraw("\<Esc>[?6c")
-            autocmd VimLeave,VimSuspend * call echoraw("\<Esc>[?6c")
+            autocmd VimLeave,VimSuspend * call echoraw("\<Esc>%G\<Esc>[?16;238;0c")
         augroup END
     endif
 else
@@ -240,6 +251,7 @@ else
     let &t_SR = "\<Esc>[3 q"
     let &t_EI = "\<Esc>[1 q"
 endif
+
 
 " --------------------------------
 " ManPages

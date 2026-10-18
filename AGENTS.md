@@ -32,6 +32,7 @@ O repositório `vimfiles` provê uma configuração de alta compatibilidade e ro
 7. **Invariante de Clonagem "Out-of-the-Box" (Zero-Tweaks Git Invariant):** O Vim deve funcionar imediatamente após `git clone`. Modos octais no Git Index DEVEM ser rigorosamente `0755` para `vim.sh` e hooks, e `0644` para `vimrc`, plugins embutidos e documentação.
 8. **Governança de Roadmap (Opção C):** O repositório mantém seu [TODO.md](TODO.md) atualizado com a Matriz de Status e Backlog de Evolução, sincronizado com o badge no `README.md`.
 9. **Refatoração Sem Legado / Soberania Monousuário (Clean-Break / Zero-Cruft Invariant):** O ecossistema é estritamente pessoal, governado e operado por um único desenvolvedor soberano (Gabriel Frigo). Evite manter resíduos de retrocompatibilidade, shims temporários, wrappers obsoletos, seções de compatibilidade legada ou aliases de transição ao renomear variáveis, comandos, funções, diretórios ou arquivos, salvo se expressamente ordenado pelo usuário. Toda refatoração deve ser atômica, direta, definitiva e limpa (_clean break_), expurgando o identificador antigo integralmente da base de código.
+10. **Ergonomia de Cursor (PTY vs Linux TTY):** O Vim alterna cursores dinamicamente via DECSCUSR em emuladores gráficos e via sequências privativas CSI do Linux VT (`\e[?2c` a `\e[?6c`) nos 5 modos de operação em consoles puros (`$TERM == 'linux'`), restaurando a sequência canônica `\e%G\e[?16;238;0c` no `VimLeave`/`VimSuspend`.
 
 ---
 
