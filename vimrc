@@ -206,12 +206,52 @@ vnoremap <silent> gc :<C-u>'<,'>call <SID>ToggleComment()<CR>
 " --------------------------------
 " Tema & Fallback
 " --------------------------------
+function! s:ApplyRawTTYHighlights() abort
+    set nocursorcolumn
+    highlight Normal         cterm=NONE ctermfg=7  ctermbg=NONE
+    highlight NonText        cterm=NONE ctermfg=8  ctermbg=NONE
+    highlight EndOfBuffer    cterm=NONE ctermfg=8  ctermbg=NONE
+    highlight SpecialKey     cterm=NONE ctermfg=8  ctermbg=NONE
+    highlight LineNr         cterm=NONE ctermfg=8  ctermbg=NONE
+    highlight CursorLine     cterm=NONE ctermfg=NONE ctermbg=NONE
+    highlight CursorLineNr   cterm=bold ctermfg=11 ctermbg=NONE
+    highlight Visual         cterm=NONE ctermfg=15 ctermbg=4
+    highlight Search         cterm=NONE ctermfg=0  ctermbg=11
+    highlight IncSearch      cterm=bold ctermfg=0  ctermbg=9
+    highlight StatusLine     cterm=bold ctermfg=15 ctermbg=4
+    highlight StatusLineNC   cterm=NONE ctermfg=7  ctermbg=8
+    highlight VertSplit      cterm=NONE ctermfg=8  ctermbg=NONE
+    highlight Pmenu          cterm=NONE ctermfg=7  ctermbg=8
+    highlight PmenuSel       cterm=bold ctermfg=15 ctermbg=4
+    highlight Comment        cterm=NONE ctermfg=8  ctermbg=NONE
+    highlight Constant       cterm=NONE ctermfg=13 ctermbg=NONE
+    highlight Number         cterm=NONE ctermfg=10 ctermbg=NONE
+    highlight Boolean        cterm=NONE ctermfg=12 ctermbg=NONE
+    highlight String         cterm=NONE ctermfg=11 ctermbg=NONE
+    highlight Character      cterm=NONE ctermfg=11 ctermbg=NONE
+    highlight Identifier     cterm=NONE ctermfg=14 ctermbg=NONE
+    highlight Function       cterm=bold ctermfg=11 ctermbg=NONE
+    highlight Statement      cterm=bold ctermfg=13 ctermbg=NONE
+    highlight Keyword        cterm=bold ctermfg=12 ctermbg=NONE
+    highlight Conditional    cterm=bold ctermfg=13 ctermbg=NONE
+    highlight Repeat         cterm=bold ctermfg=13 ctermbg=NONE
+    highlight Operator       cterm=NONE ctermfg=7  ctermbg=NONE
+    highlight PreProc        cterm=NONE ctermfg=13 ctermbg=NONE
+    highlight Type           cterm=NONE ctermfg=6  ctermbg=NONE
+    highlight Special        cterm=NONE ctermfg=14 ctermbg=NONE
+    highlight Directory      cterm=bold ctermfg=12 ctermbg=NONE
+    highlight Error          cterm=bold ctermfg=15 ctermbg=1
+    highlight ErrorMsg       cterm=bold ctermfg=15 ctermbg=1
+    highlight WarningMsg     cterm=bold ctermfg=11 ctermbg=NONE
+    highlight MatchParen     cterm=bold,underline ctermfg=14 ctermbg=NONE
+endfunction
+
 if s:is_raw_tty
     silent! colorscheme habamax
     if !exists('g:colors_name') || g:colors_name !=# 'habamax'
         silent! colorscheme default
     endif
-    silent! highlight Visual cterm=NONE ctermbg=238 ctermfg=15
+    call s:ApplyRawTTYHighlights()
 else
     silent! colorscheme codedark
 endif
