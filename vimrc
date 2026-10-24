@@ -303,16 +303,16 @@ elseif s:is_raw_tty
     if exists('##ModeChanged') && exists('*echoraw')
         augroup FreeBSDTTYCursor
             autocmd!
-            autocmd VimEnter * call echoraw("\<Esc>]12;#2472c8\<C-g>") | silent! highlight Cursor ctermfg=15 ctermbg=4
-            autocmd ModeChanged *:i* call echoraw("\<Esc>]12;#0dbc79\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=2
-            autocmd ModeChanged *:c* call echoraw("\<Esc>]12;#e5e510\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=3
-            autocmd ModeChanged *:r*,*:R* call echoraw("\<Esc>]12;#cd3131\<C-g>") | silent! highlight Cursor ctermfg=15 ctermbg=1
-            autocmd ModeChanged *:o* call echoraw("\<Esc>]12;#cd3131\<C-g>") | silent! highlight Cursor ctermfg=15 ctermbg=1
-            execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>]12;#e5e510\\<C-g>\") | silent! highlight Cursor ctermfg=0 ctermbg=3"
-            autocmd ModeChanged *:n* call echoraw("\<Esc>]12;#2472c8\<C-g>") | silent! highlight Cursor ctermfg=15 ctermbg=4
+            autocmd VimEnter * call echoraw("\<Esc>]12;#ffffff\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=15
+            autocmd ModeChanged *:i* call echoraw("\<Esc>]12;#d4d4d4\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=7
+            autocmd ModeChanged *:c* call echoraw("\<Esc>]12;#e5e5e5\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=15
+            autocmd ModeChanged *:r*,*:R* call echoraw("\<Esc>]12;#a8a8a8\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=7
+            autocmd ModeChanged *:o* call echoraw("\<Esc>]12;#a8a8a8\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=7
+            execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>]12;#858585\\<C-g>\") | silent! highlight Cursor ctermfg=15 ctermbg=8"
+            autocmd ModeChanged *:n* call echoraw("\<Esc>]12;#ffffff\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=15
             if exists('##CmdlineEnter')
-                autocmd CmdlineEnter * call echoraw("\<Esc>]12;#e5e510\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=3
-                autocmd CmdlineLeave * call echoraw("\<Esc>]12;#2472c8\<C-g>") | silent! highlight Cursor ctermfg=15 ctermbg=4
+                autocmd CmdlineEnter * call echoraw("\<Esc>]12;#e5e5e5\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=15
+                autocmd CmdlineLeave * call echoraw("\<Esc>]12;#ffffff\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=15
             endif
             autocmd VimLeave,VimSuspend * call echoraw("\<Esc>]112\<C-g>")
         augroup END
