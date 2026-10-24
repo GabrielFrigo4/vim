@@ -10,6 +10,9 @@
 | Área                         |   Status    | Cobertura / Estado                                                                       |
 | :--------------------------- | :---------: | :--------------------------------------------------------------------------------------- |
 | **Resiliência TTY & Mouse**  | 🟢 Estável  | Detecção de `$RAW_TTY`, console Linux/FreeBSD, fallback `default` e mouse `gpm`/`moused` |
+| **Mouse SGR no Console**     | 🟢 Estável  | Protocolo SGR 1006 via `&t_TI`/`&t_TE` no FreeBSD `vt(4)` e Linux raw TTY                |
+| **Cursor Colorido por Modo** | 🟢 Estável  | Sequências OSC 12 e highlights no TTY FreeBSD sem alteração física de forma              |
+| **Terminal Embutido**        | 🟢 Estável  | Paleta `g:terminal_ansi_colors` de 16 cores e navegação ágil com `Esc`/`C-\ C-n`         |
 | **Comentários Nativos**      | 🟢 Estável  | Toggler leve (`gcc`/`gc`) sem dependências de plugins externos                           |
 | **Vim-Plug & FZF**           | 🟢 Estável  | Bootstrapping estrito e busca difusa rápida via `fzf.vim`                                |
 | **Paridade Multiplataforma** | 🟢 Estável  | Suporte verificado em Linux, FreeBSD, macOS e Windows (`vimfiles`)                       |
