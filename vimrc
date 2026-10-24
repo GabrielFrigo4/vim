@@ -64,6 +64,10 @@ set mouse=a
 if has('mouse_sgr')
     set ttymouse=sgr
 endif
+if s:is_raw_tty
+    let &t_TI .= "\<Esc>[?1000h\<Esc>[?1002h\<Esc>[?1006h"
+    let &t_TE .= "\<Esc>[?1006l\<Esc>[?1002l\<Esc>[?1000l"
+endif
 set clipboard^=unnamed,unnamedplus
 set ttimeout
 set ttimeoutlen=50
@@ -295,6 +299,24 @@ if $TERM ==# 'linux'
             autocmd VimLeave,VimSuspend * call echoraw("\<Esc>%G\<Esc>[?16;238;0c")
         augroup END
     endif
+elseif s:is_raw_tty
+    if exists('##ModeChanged') && exists('*echoraw')
+        augroup FreeBSDTTYCursor
+            autocmd!
+            autocmd VimEnter * call echoraw("\<Esc>]12;#2472c8\<C-g>") | silent! highlight Cursor ctermfg=15 ctermbg=4
+            autocmd ModeChanged *:i* call echoraw("\<Esc>]12;#0dbc79\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=2
+            autocmd ModeChanged *:c* call echoraw("\<Esc>]12;#e5e510\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=3
+            autocmd ModeChanged *:r*,*:R* call echoraw("\<Esc>]12;#cd3131\<C-g>") | silent! highlight Cursor ctermfg=15 ctermbg=1
+            autocmd ModeChanged *:o* call echoraw("\<Esc>]12;#cd3131\<C-g>") | silent! highlight Cursor ctermfg=15 ctermbg=1
+            execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>]12;#e5e510\\<C-g>\") | silent! highlight Cursor ctermfg=0 ctermbg=3"
+            autocmd ModeChanged *:n* call echoraw("\<Esc>]12;#2472c8\<C-g>") | silent! highlight Cursor ctermfg=15 ctermbg=4
+            if exists('##CmdlineEnter')
+                autocmd CmdlineEnter * call echoraw("\<Esc>]12;#e5e510\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=3
+                autocmd CmdlineLeave * call echoraw("\<Esc>]12;#2472c8\<C-g>") | silent! highlight Cursor ctermfg=15 ctermbg=4
+            endif
+            autocmd VimLeave,VimSuspend * call echoraw("\<Esc>]112\<C-g>")
+        augroup END
+    endif
 elseif !s:is_raw_tty
     let &t_SI = "\<Esc>[5 q"
     let &t_SR = "\<Esc>[3 q"
@@ -335,3 +357,21 @@ augroup AssemblyConfig
     autocmd FileType asm,nasm,fasm,masm,riscv,arm,c,cpp,rust,go,python,lua
         \ setlocal tabstop=4 softtabstop=4 shiftwidth=4 noexpandtab autoindent
 augroup END
+
+" --------------------------------
+" Terminal Embutido
+" --------------------------------
+if has('terminal')
+    let g:terminal_ansi_colors = [
+        \ '#000000', '#cd3131', '#0dbc79', '#e5e510',
+        \ '#2472c8', '#bc3fbc', '#11a8cd', '#e5e5e5',
+        \ '#666666', '#f14c4c', '#23d18b', '#f5f543',
+        \ '#3b8eea', '#d670d6', '#29b8db', '#ffffff'
+        \ ]
+    tnoremap <Esc> <C-W>N
+    tnoremap <C-\><C-n> <C-W>N
+    augroup VimTerminalConfig
+        autocmd!
+        autocmd TerminalOpen * setlocal nonumber norelativenumber signcolumn=no
+    augroup END
+endif
