@@ -353,6 +353,31 @@ elseif !s:is_raw_tty
     endif
 endif
 
+function! s:replace_single_char(is_insert) abort
+    let l:cur = ($TERM ==# 'linux') ? "\<Esc>[?4c" : (s:is_raw_tty ? ("\<Esc>]12;" . s:scale_tone(0.70) . "\<C-g>") : "\<Esc>[3 q")
+    let l:norm = a:is_insert ? (($TERM ==# 'linux') ? "\<Esc>[?2c" : (s:is_raw_tty ? ("\<Esc>]12;" . s:scale_tone(0.85) . "\<C-g>") : "\<Esc>[5 q")) : (($TERM ==# 'linux') ? "\<Esc>[?6c" : (s:is_raw_tty ? ("\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>") : "\<Esc>[1 q"))
+    if exists('*echoraw')
+        call echoraw(l:cur)
+    endif
+    try
+        let l:c = getcharstr()
+        if exists('*echoraw')
+            call echoraw(l:norm)
+        endif
+        if l:c ==# "\<Esc>" || l:c ==# "\<C-c>"
+            return ''
+        endif
+        return 'r' . l:c
+    catch
+        if exists('*echoraw')
+            call echoraw(l:norm)
+        endif
+        return ''
+    endtry
+endfunction
+nnoremap <expr> <silent> r <SID>replace_single_char(0)
+inoremap <expr> <silent> <C-o>r '<Cmd>call ' . (($TERM ==# 'linux') ? 'echoraw("\<Esc>[?4c")' : (s:is_raw_tty ? 'echoraw("\<Esc>]12;" . s:scale_tone(0.70) . "\<C-g>")' : 'echoraw("\<Esc>[3 q")')) . '<CR><C-o>r'
+
 " --------------------------------
 " ManPages
 " --------------------------------
