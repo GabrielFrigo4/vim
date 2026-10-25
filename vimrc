@@ -274,20 +274,27 @@ else
     au VimLeave,VimSuspend * set guicursor=
 endif
 
-function! s:scale_tone(factor) abort
+function! s:scale_tone(alpha) abort
     let l:col = synIDattr(synIDtrans(hlID('Cursor')), 'bg#')
     if empty(l:col) || l:col !~# '^#[0-9a-fA-F]\{6\}$'
         let l:col = synIDattr(synIDtrans(hlID('Normal')), 'fg#')
     endif
-    if empty(l:col) || l:col !~# '^#[0-9a-fA-F]\{6\}$'
-        let l:col = '#ffffff'
+    let l:bg = synIDattr(synIDtrans(hlID('Normal')), 'bg#')
+    if empty(l:bg) || l:bg !~# '^#[0-9a-fA-F]\{6\}$'
+        let l:bg = (&background ==# 'light') ? '#ffffff' : '#000000'
     endif
-    let l:r = str2nr(strpart(l:col, 1, 2), 16)
-    let l:g = str2nr(strpart(l:col, 3, 2), 16)
-    let l:b = str2nr(strpart(l:col, 5, 2), 16)
-    let l:nr = min([255, max([0, float2nr(round(l:r * a:factor))])])
-    let l:ng = min([255, max([0, float2nr(round(l:g * a:factor))])])
-    let l:nb = min([255, max([0, float2nr(round(l:b * a:factor))])])
+    if empty(l:col) || l:col !~# '^#[0-9a-fA-F]\{6\}$'
+        let l:col = (&background ==# 'light') ? '#000000' : '#ffffff'
+    endif
+    let l:cr = str2nr(strpart(l:col, 1, 2), 16)
+    let l:cg = str2nr(strpart(l:col, 3, 2), 16)
+    let l:cb = str2nr(strpart(l:col, 5, 2), 16)
+    let l:br = str2nr(strpart(l:bg, 1, 2), 16)
+    let l:bg_g = str2nr(strpart(l:bg, 3, 2), 16)
+    let l:bb = str2nr(strpart(l:bg, 5, 2), 16)
+    let l:nr = min([255, max([0, float2nr(round(l:cr * a:alpha + l:br * (1.0 - a:alpha)))])])
+    let l:ng = min([255, max([0, float2nr(round(l:cg * a:alpha + l:bg_g * (1.0 - a:alpha)))])])
+    let l:nb = min([255, max([0, float2nr(round(l:cb * a:alpha + l:bb * (1.0 - a:alpha)))])])
     return printf('#%02x%02x%02x', l:nr, l:ng, l:nb)
 endfunction
 
