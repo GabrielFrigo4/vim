@@ -328,14 +328,14 @@ elseif s:is_raw_tty
         augroup FreeBSDTTYCursor
             autocmd!
             autocmd VimEnter * call echoraw("\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>")
-            autocmd ModeChanged *:i* call echoraw("\<Esc>]12;" . s:scale_tone(0.95) . "\<C-g>")
-            autocmd ModeChanged *:c* call echoraw("\<Esc>]12;" . s:scale_tone(0.90) . "\<C-g>")
-            autocmd ModeChanged *:r*,*:R* call echoraw("\<Esc>]12;" . s:scale_tone(0.85) . "\<C-g>")
-            autocmd ModeChanged *:o* call echoraw("\<Esc>]12;" . s:scale_tone(0.85) . "\<C-g>")
-            execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>]12;\" . s:scale_tone(0.80) . \"\\<C-g>\")"
+            autocmd ModeChanged *:i* call echoraw("\<Esc>]12;" . s:scale_tone(0.92) . "\<C-g>")
+            autocmd ModeChanged *:c* call echoraw("\<Esc>]12;" . s:scale_tone(0.84) . "\<C-g>")
+            autocmd ModeChanged *:r*,*:R* call echoraw("\<Esc>]12;" . s:scale_tone(0.76) . "\<C-g>")
+            autocmd ModeChanged *:o* call echoraw("\<Esc>]12;" . s:scale_tone(0.76) . "\<C-g>")
+            execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>]12;\" . s:scale_tone(0.68) . \"\\<C-g>\")"
             autocmd ModeChanged *:n* call echoraw("\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>")
             if exists('##CmdlineEnter')
-                autocmd CmdlineEnter * call echoraw("\<Esc>]12;" . s:scale_tone(0.90) . "\<C-g>")
+                autocmd CmdlineEnter * call echoraw("\<Esc>]12;" . s:scale_tone(0.84) . "\<C-g>")
                 autocmd CmdlineLeave * call echoraw("\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>")
             endif
             autocmd VimLeave,VimSuspend * call echoraw("\<Esc>]112\<C-g>")
@@ -350,14 +350,14 @@ elseif !s:is_raw_tty
         augroup PTYCursor
             autocmd!
             autocmd VimEnter * call echoraw("\<Esc>[1 q\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>")
-            autocmd ModeChanged *:i* call echoraw("\<Esc>[5 q\<Esc>]12;" . s:scale_tone(0.95) . "\<C-g>")
-            autocmd ModeChanged *:c* call echoraw("\<Esc>[5 q\<Esc>]12;" . s:scale_tone(0.90) . "\<C-g>")
-            autocmd ModeChanged *:r*,*:R* call echoraw("\<Esc>[3 q\<Esc>]12;" . s:scale_tone(0.85) . "\<C-g>")
-            autocmd ModeChanged *:o* call echoraw("\<Esc>[3 q\<Esc>]12;" . s:scale_tone(0.85) . "\<C-g>")
-            execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>[1 q\\<Esc>]12;\" . s:scale_tone(0.80) . \"\\<C-g>\")"
+            autocmd ModeChanged *:i* call echoraw("\<Esc>[5 q\<Esc>]12;" . s:scale_tone(0.92) . "\<C-g>")
+            autocmd ModeChanged *:c* call echoraw("\<Esc>[5 q\<Esc>]12;" . s:scale_tone(0.84) . "\<C-g>")
+            autocmd ModeChanged *:r*,*:R* call echoraw("\<Esc>[3 q\<Esc>]12;" . s:scale_tone(0.76) . "\<C-g>")
+            autocmd ModeChanged *:o* call echoraw("\<Esc>[3 q\<Esc>]12;" . s:scale_tone(0.76) . "\<C-g>")
+            execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>[1 q\\<Esc>]12;\" . s:scale_tone(0.68) . \"\\<C-g>\")"
             autocmd ModeChanged *:n* call echoraw("\<Esc>[1 q\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>")
             if exists('##CmdlineEnter')
-                autocmd CmdlineEnter * call echoraw("\<Esc>[5 q\<Esc>]12;" . s:scale_tone(0.90) . "\<C-g>")
+                autocmd CmdlineEnter * call echoraw("\<Esc>[5 q\<Esc>]12;" . s:scale_tone(0.84) . "\<C-g>")
                 autocmd CmdlineLeave * call echoraw("\<Esc>[1 q\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>")
             endif
             autocmd VimLeave,VimSuspend * call echoraw("\<Esc>[1 q\<Esc>]112\<C-g>")
@@ -366,8 +366,8 @@ elseif !s:is_raw_tty
 endif
 
 function! s:replace_single_char(is_insert) abort
-    let l:cur = ($TERM ==# 'linux') ? "\<Esc>[?4c" : ("\<Esc>[3 q\<Esc>]12;" . s:scale_tone(0.85) . "\<C-g>")
-    let l:norm = a:is_insert ? (($TERM ==# 'linux') ? "\<Esc>[?2c" : ("\<Esc>[5 q\<Esc>]12;" . s:scale_tone(0.95) . "\<C-g>")) : (($TERM ==# 'linux') ? "\<Esc>[?6c" : ("\<Esc>[1 q\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>"))
+    let l:cur = ($TERM ==# 'linux') ? "\<Esc>[?4c" : ("\<Esc>[3 q\<Esc>]12;" . s:scale_tone(0.76) . "\<C-g>")
+    let l:norm = a:is_insert ? (($TERM ==# 'linux') ? "\<Esc>[?2c" : ("\<Esc>[5 q\<Esc>]12;" . s:scale_tone(0.92) . "\<C-g>")) : (($TERM ==# 'linux') ? "\<Esc>[?6c" : ("\<Esc>[1 q\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>"))
     let l:pos = screenpos(win_getid(), line('.'), col('.'))
     let l:move = (l:pos.row > 0 && l:pos.col > 0) ? printf("\<Esc>[%d;%dH", l:pos.row, l:pos.col) : ''
     if exists('*echoraw')
