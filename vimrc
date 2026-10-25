@@ -370,7 +370,7 @@ function! s:replace_single_char(is_insert) abort
         if l:c ==# "\<Esc>" || l:c ==# "\<C-c>"
             return ''
         endif
-        return 'r' . l:c
+        return (a:is_insert ? "\<C-o>r" : 'r') . l:c
     catch
         if exists('*echoraw')
             call echoraw(l:norm)
@@ -380,7 +380,7 @@ function! s:replace_single_char(is_insert) abort
     endtry
 endfunction
 nnoremap <expr> <silent> r <SID>replace_single_char(0)
-inoremap <expr> <silent> <C-o>r '<Cmd>call ' . (($TERM ==# 'linux') ? 'echoraw("\<Esc>[?4c")' : (s:is_raw_tty ? 'echoraw("\<Esc>]12;" . s:scale_tone(0.70) . "\<C-g>")' : 'echoraw("\<Esc>[3 q")')) . '<CR><C-o>r'
+inoremap <expr> <silent> <C-o>r <SID>replace_single_char(1)
 
 " --------------------------------
 " ManPages
