@@ -274,6 +274,23 @@ else
     au VimLeave,VimSuspend * set guicursor=
 endif
 
+function! s:scale_tone(factor) abort
+    let l:col = synIDattr(synIDtrans(hlID('Cursor')), 'bg#')
+    if empty(l:col) || l:col !~# '^#[0-9a-fA-F]\{6\}$'
+        let l:col = synIDattr(synIDtrans(hlID('Normal')), 'fg#')
+    endif
+    if empty(l:col) || l:col !~# '^#[0-9a-fA-F]\{6\}$'
+        let l:col = '#ffffff'
+    endif
+    let l:r = str2nr(strpart(l:col, 1, 2), 16)
+    let l:g = str2nr(strpart(l:col, 3, 2), 16)
+    let l:b = str2nr(strpart(l:col, 5, 2), 16)
+    let l:nr = min([255, max([0, float2nr(round(l:r * a:factor))])])
+    let l:ng = min([255, max([0, float2nr(round(l:g * a:factor))])])
+    let l:nb = min([255, max([0, float2nr(round(l:b * a:factor))])])
+    return printf('#%02x%02x%02x', l:nr, l:ng, l:nb)
+endfunction
+
 if $TERM ==# 'linux'
     let &t_vi = "\<Esc>[?25l"
     let &t_ve = "\<Esc>[?25h"
@@ -300,22 +317,6 @@ if $TERM ==# 'linux'
         augroup END
     endif
 elseif s:is_raw_tty
-    function! s:scale_tone(factor) abort
-        let l:col = synIDattr(synIDtrans(hlID('Cursor')), 'bg#')
-        if empty(l:col) || l:col !~# '^#[0-9a-fA-F]\{6\}$'
-            let l:col = synIDattr(synIDtrans(hlID('Normal')), 'fg#')
-        endif
-        if empty(l:col) || l:col !~# '^#[0-9a-fA-F]\{6\}$'
-            let l:col = '#ffffff'
-        endif
-        let l:r = str2nr(strpart(l:col, 1, 2), 16)
-        let l:g = str2nr(strpart(l:col, 3, 2), 16)
-        let l:b = str2nr(strpart(l:col, 5, 2), 16)
-        let l:nr = min([255, max([0, float2nr(round(l:r * a:factor))])])
-        let l:ng = min([255, max([0, float2nr(round(l:g * a:factor))])])
-        let l:nb = min([255, max([0, float2nr(round(l:b * a:factor))])])
-        return printf('#%02x%02x%02x', l:nr, l:ng, l:nb)
-    endfunction
     if exists('##ModeChanged') && exists('*echoraw')
         augroup FreeBSDTTYCursor
             autocmd!
@@ -358,11 +359,13 @@ function! s:replace_single_char(is_insert) abort
     let l:norm = a:is_insert ? (($TERM ==# 'linux') ? "\<Esc>[?2c" : (s:is_raw_tty ? ("\<Esc>]12;" . s:scale_tone(0.85) . "\<C-g>") : "\<Esc>[5 q")) : (($TERM ==# 'linux') ? "\<Esc>[?6c" : (s:is_raw_tty ? ("\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>") : "\<Esc>[1 q"))
     if exists('*echoraw')
         call echoraw(l:cur)
+        redraw
     endif
     try
         let l:c = getcharstr()
         if exists('*echoraw')
             call echoraw(l:norm)
+            redraw
         endif
         if l:c ==# "\<Esc>" || l:c ==# "\<C-c>"
             return ''
@@ -371,6 +374,7 @@ function! s:replace_single_char(is_insert) abort
     catch
         if exists('*echoraw')
             call echoraw(l:norm)
+            redraw
         endif
         return ''
     endtry
