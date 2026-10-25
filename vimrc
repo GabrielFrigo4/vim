@@ -61,10 +61,10 @@ set nowrap
 set backspace=indent,eol,start
 set whichwrap+=<,>,h,l,[,]
 set mouse=a
-if has('mouse_sgr')
+if has('mouse_sgr') && $TERM !=# 'linux'
     set ttymouse=sgr
 endif
-if s:is_raw_tty
+if s:is_raw_tty && $TERM !=# 'linux'
     let &t_TI .= "\<Esc>[?1000h\<Esc>[?1002h\<Esc>[?1006h"
     let &t_TE .= "\<Esc>[?1006l\<Esc>[?1002l\<Esc>[?1000l"
 endif
@@ -300,19 +300,35 @@ if $TERM ==# 'linux'
         augroup END
     endif
 elseif s:is_raw_tty
+    function! s:scale_tone(factor) abort
+        let l:col = synIDattr(synIDtrans(hlID('Cursor')), 'bg#')
+        if empty(l:col) || l:col !~# '^#[0-9a-fA-F]\{6\}$'
+            let l:col = synIDattr(synIDtrans(hlID('Normal')), 'fg#')
+        endif
+        if empty(l:col) || l:col !~# '^#[0-9a-fA-F]\{6\}$'
+            let l:col = '#ffffff'
+        endif
+        let l:r = str2nr(strpart(l:col, 1, 2), 16)
+        let l:g = str2nr(strpart(l:col, 3, 2), 16)
+        let l:b = str2nr(strpart(l:col, 5, 2), 16)
+        let l:nr = min([255, max([0, float2nr(round(l:r * a:factor))])])
+        let l:ng = min([255, max([0, float2nr(round(l:g * a:factor))])])
+        let l:nb = min([255, max([0, float2nr(round(l:b * a:factor))])])
+        return printf('#%02x%02x%02x', l:nr, l:ng, l:nb)
+    endfunction
     if exists('##ModeChanged') && exists('*echoraw')
         augroup FreeBSDTTYCursor
             autocmd!
-            autocmd VimEnter * call echoraw("\<Esc>]12;#ffffff\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=15
-            autocmd ModeChanged *:i* call echoraw("\<Esc>]12;#d4d4d4\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=7
-            autocmd ModeChanged *:c* call echoraw("\<Esc>]12;#e5e5e5\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=15
-            autocmd ModeChanged *:r*,*:R* call echoraw("\<Esc>]12;#a8a8a8\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=7
-            autocmd ModeChanged *:o* call echoraw("\<Esc>]12;#a8a8a8\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=7
-            execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>]12;#858585\\<C-g>\") | silent! highlight Cursor ctermfg=15 ctermbg=8"
-            autocmd ModeChanged *:n* call echoraw("\<Esc>]12;#ffffff\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=15
+            autocmd VimEnter * call echoraw("\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>")
+            autocmd ModeChanged *:i* call echoraw("\<Esc>]12;" . s:scale_tone(0.85) . "\<C-g>")
+            autocmd ModeChanged *:c* call echoraw("\<Esc>]12;" . s:scale_tone(0.85) . "\<C-g>")
+            autocmd ModeChanged *:r*,*:R* call echoraw("\<Esc>]12;" . s:scale_tone(0.70) . "\<C-g>")
+            autocmd ModeChanged *:o* call echoraw("\<Esc>]12;" . s:scale_tone(0.70) . "\<C-g>")
+            execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>]12;\" . s:scale_tone(0.55) . \"\\<C-g>\")"
+            autocmd ModeChanged *:n* call echoraw("\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>")
             if exists('##CmdlineEnter')
-                autocmd CmdlineEnter * call echoraw("\<Esc>]12;#e5e5e5\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=15
-                autocmd CmdlineLeave * call echoraw("\<Esc>]12;#ffffff\<C-g>") | silent! highlight Cursor ctermfg=0 ctermbg=15
+                autocmd CmdlineEnter * call echoraw("\<Esc>]12;" . s:scale_tone(0.85) . "\<C-g>")
+                autocmd CmdlineLeave * call echoraw("\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>")
             endif
             autocmd VimLeave,VimSuspend * call echoraw("\<Esc>]112\<C-g>")
         augroup END
