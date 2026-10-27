@@ -28,3 +28,12 @@
 - **Cursor em Bloco Colorido por Modo no TTY:** Implementação estética via sequências OSC 12 e highlights de cursor no TTY do FreeBSD sem suporte a `DECSCUSR`.
 - **Terminal Embutido & Paleta ANSI 16 Cores:** Configuração de `g:terminal_ansi_colors` sincronizada com o terminal e mapeamentos ergonômicos no modo terminal.
 - **Sincronização:** Total alinhamento com os 22 Princípios de Engenharia UNIX do Universal Environment.
+
+---
+
+## 📌 Backlog & Próximos Passos
+
+---
+
+> [!TIP]
+> Para detalhes sobre a arquitetura e convenções de engenharia, consulte o [PRINCIPLES.md](PRINCIPLES.md) e o [ENVIRONMENT.md](ENVIRONMENT.md).
