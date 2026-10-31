@@ -25,7 +25,7 @@ O repositório `vimfiles` provê uma configuração de alta compatibilidade e ro
 
 1. **Fail-Safe Startup:** O `vimrc` NUNCA deve quebrar ou lançar mensagens de erro se os plugins ainda não tiverem sido instalados ou se `codedark` estiver ausente. `silent! colorscheme` e `if exists('*plug#begin')` são obrigatórios.
 2. **Onipresença UNIX:** A configuração deve funcionar perfeitamente em servidores remotos, terminais sem suporte gráfico e máquinas virtuais limpas.
-3. **Zero Comentários Narrativos:** Mantenha a arquitetura de comentários em 3 camadas (`"` e réguas de 64/32 caracteres).
+3. **Taxonomia Tripartite de Comentários:** O código adota estritamente três categorias: 1. Comentários de Sistema = PERMITIDOS (shebangs, pragmas); 2. Comentários Estruturais de 64/32 colunas = PERMITIDOS (cabeçalhos de 64 `-` ou `"`, seções de 32 caracteres `### ===` ou `""" ===`, réguas de 64 `=` em `.gitignore`, sem vazamento); 3. Comentários Explicativos/Narrativos = PROIBIDOS em código, configs E blocos de código dentro de Markdowns.
 4. **Zero Secrets:** Nunca armazenar credenciais ou tokens neste repositório.
 5. **Hermetismo de Produção & Invariante `rm -rf .agents`:** Repositório 100% autônomo. Zero acoplamento de configurações a `.agents/` ou `skills/` (o Vim opera plenamente se `.agents/` for deletado).
 6. **Bancada de Desenvolvimento vs. Runtimes de Produção:** Em produção, o Vim reside e opera soberanamente em `~/.vim` (ou `~/vimfiles`). O repositório central `Environment` é exclusivamente uma bancada de desenvolvimento. NUNCA aponte symlinks no SO para `~/Documents/Environment/Editor/Vim`.
@@ -44,8 +44,8 @@ Se durante a execução de qualquer tarefa (seja criação de novas features, co
 
 1. **Notificar concisamente** o usuário sobre a divergência encontrada.
 2. **Corrigir imediatamente a inconformidade**, aplicando o padrão canônico correspondente:
-    - **Comentários Narrativos:** Eliminar imediatamente comentários óbvios que apenas narram código executável.
-    - **Banners Estruturais:** Ajustar réguas para exatamente 64 hífens no topo ou 32 caracteres com `### ` no corpo.
+    - **Taxonomia Tripartite de Comentários:** Eliminar imediatamente comentários explicativos óbvios em código, configs e blocos de código em Markdowns, preservando exclusivamente comentários de sistema e delimitadores estruturais (64/32 colunas).
+    - **Banners Estruturais:** Ajustar réguas para exatamente 64 hífens no topo ou 32 caracteres com `### ` no corpo (ou 64 `=` em `.gitignore`).
     - **Portabilidade POSIX:** Substituir bashismos (`[[ ]]`, `&>`, arrays, `source`) por sintaxe estrita POSIX `/bin/sh`.
     - **Shebang Universal:** Garantir sempre `#!/usr/bin/env sh` ou `#!/usr/bin/env python3`.
     - **Sequências ANSI & Escapes:** Eliminar terminantemente octais (`\033`, `\001`) para caracteres ou bytes. Usar `[ -t 1 ] && echo -n $'\e...'` para sequências de escape, notação hexadecimal (`\x01`, `\x1b`) para bytes/controles e fugir de `printf` desnecessário. Notação octal é estritamente aceita apenas onde o sistema operacional a exige nativamente (permissões POSIX: `chmod 0755`, `chmod 0644`, `umask`).

@@ -14,6 +14,13 @@ filetype plugin indent on
 syntax on
 set encoding=UTF-8
 
+let s:is_gui_pty = (!empty($DISPLAY) || !empty($WAYLAND_DISPLAY) || (filereadable('/proc/self/fd/0') && resolve('/proc/self/fd/0') =~# '^/dev/pts/'))
+if s:is_gui_pty
+    silent! unlet $RAW_TTY
+    silent! unlet $LC_RAW_TTY
+    silent! unlet $UNIVERSAL_RAW_TTY
+endif
+
 let s:is_raw_tty = ($RAW_TTY ==# '1' || $TERM ==# 'linux' || $TERM ==# 'cons25' || $TERM =~# '^vt[0-9]' || (empty($DISPLAY) && empty($WAYLAND_DISPLAY) && empty($SSH_CONNECTION) && empty($SSH_TTY) && !empty($TERM) && $TERM !~? 'xterm-256color|alacritty|kitty|foot|wezterm|ghostty'))
 let s:is_ssh = (!empty($SSH_CONNECTION) || !empty($SSH_CLIENT) || !empty($SSH_TTY))
 
@@ -138,11 +145,27 @@ endif
 let mapleader="\\"
 
 " --------------------------------
-" Navegacao de Janelas
+" Navegacao & Palavras
 " --------------------------------
 nnoremap <tab> :wincmd w<CR>
 nnoremap ; :wincmd w<CR>
 nnoremap <M-]> :wincmd w<CR>
+if !has('gui_running')
+    execute "silent! set <C-Left>=\<Esc>[1;5D"
+    execute "silent! set <C-Right>=\<Esc>[1;5C"
+endif
+nnoremap <silent> <C-Left> b
+nnoremap <silent> <C-Right> w
+inoremap <silent> <C-Left> <C-o>b
+inoremap <silent> <C-Right> <C-o>w
+nnoremap <silent> <Esc>[1;5D b
+nnoremap <silent> <Esc>[1;5C w
+inoremap <silent> <Esc>[1;5D <C-o>b
+inoremap <silent> <Esc>[1;5C <C-o>w
+nnoremap <silent> <Esc>[5D b
+nnoremap <silent> <Esc>[5C w
+inoremap <silent> <Esc>[5D <C-o>b
+inoremap <silent> <Esc>[5C <C-o>w
 
 " --------------------------------
 " NERDTree
@@ -415,5 +438,8 @@ if has('terminal')
     augroup VimTerminalConfig
         autocmd!
         autocmd TerminalOpen * setlocal nonumber norelativenumber signcolumn=no
+        if s:is_gui_pty
+            autocmd TerminalOpen * silent! unlet $RAW_TTY $LC_RAW_TTY $UNIVERSAL_RAW_TTY
+        endif
     augroup END
 endif
