@@ -293,7 +293,7 @@ endif
 if s:is_raw_tty
     set guicursor=
 else
-    au VimEnter,VimResume * set guicursor=n-v-sm:block,i-ci:ver25,c:ver25,r-cr:hor50,o:hor50,ve:ver35,a:blinkwait700-blinkoff400-blinkon250-Cursor/lCursor
+    au VimEnter,VimResume * set guicursor=n-v-sm:block,i-ci:ver25,c:ver25,r-cr:hor50,o:hor50,ve:ver35,a:blinkwait600-blinkoff600-blinkon600-Cursor/lCursor
     au VimLeave,VimSuspend * set guicursor=
 endif
 
