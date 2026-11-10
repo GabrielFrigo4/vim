@@ -7,7 +7,7 @@
 " ================================
 
 " --------------------------------
-" Essenciais
+" ESSENCIAIS
 " --------------------------------
 set nocompatible
 filetype plugin indent on
@@ -21,10 +21,10 @@ if s:is_gui_pty
     silent! unlet $UNIVERSAL_RAW_TTY
 endif
 
-let s:is_raw_tty = ($RAW_TTY ==# '1' || $TERM ==# 'linux' || $TERM ==# 'cons25' || $TERM =~# '^vt[0-9]' || (empty($DISPLAY) && empty($WAYLAND_DISPLAY) && empty($SSH_CONNECTION) && empty($SSH_TTY) && !empty($TERM) && $TERM !~? 'xterm-256color|alacritty|kitty|foot|wezterm|ghostty'))
+let s:is_win = has('win32') || has('win64')
+let s:is_raw_tty = !s:is_win && ($RAW_TTY ==# '1' || $TERM ==# 'linux' || $TERM ==# 'cons25' || $TERM =~# '^vt[0-9]' || (empty($DISPLAY) && empty($WAYLAND_DISPLAY) && empty($SSH_CONNECTION) && empty($SSH_TTY) && !empty($TERM) && $TERM !~? 'xterm-256color|alacritty|kitty|foot|wezterm|ghostty'))
 let s:is_ssh = (!empty($SSH_CONNECTION) || !empty($SSH_CLIENT) || !empty($SSH_TTY))
 
-let s:is_win = has('win32') || has('win64')
 let s:user_vim_dir = s:is_win ? expand('$HOME/vimfiles') : expand('$HOME/.vim')
 if s:is_win && isdirectory(s:user_vim_dir) && stridx(&runtimepath, s:user_vim_dir) == -1
     let &runtimepath = s:user_vim_dir . ',' . &runtimepath . ',' . s:user_vim_dir . '/after'
@@ -39,7 +39,7 @@ if filereadable(s:vim_dir . '/autoload/plug.vim') && !exists('*plug#begin')
 endif
 
 " --------------------------------
-" Interface & Visual
+" INTERFACE & VISUAL
 " --------------------------------
 set number
 set relativenumber
@@ -51,7 +51,7 @@ set wildmenu
 set wildmode=list:longest
 
 " --------------------------------
-" Busca
+" BUSCA
 " --------------------------------
 set incsearch
 set hlsearch
@@ -59,7 +59,7 @@ set ignorecase
 set smartcase
 
 " --------------------------------
-" Comportamento do Editor
+" COMPORTAMENTO DO EDITOR
 " --------------------------------
 set hidden
 set nobackup
@@ -80,7 +80,7 @@ set ttimeout
 set ttimeoutlen=50
 
 " --------------------------------
-" Indentacao
+" INDENTACAO
 " --------------------------------
 set tabstop=4
 set softtabstop=4
@@ -89,7 +89,7 @@ set noexpandtab
 set autoindent
 
 " --------------------------------
-" Cores & TTY Fallback
+" CORES & TTY FALLBACK
 " --------------------------------
 if s:is_raw_tty
     if has('termguicolors')
@@ -110,7 +110,7 @@ if exists('*plug#begin')
     call plug#begin()
 
         " --------------------------------
-        " Interface (Resiliente)
+        " INTERFACE RESILIENTE
         " --------------------------------
         if !s:is_raw_tty
             Plug 'ryanoasis/vim-devicons'
@@ -119,7 +119,7 @@ if exists('*plug#begin')
         Plug 'tomasiser/vim-code-dark'
 
         " --------------------------------
-        " Ferramentas & FZF
+        " FERRAMENTAS & FZF
         " --------------------------------
         Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
         Plug 'junegunn/fzf.vim'
@@ -129,7 +129,7 @@ if exists('*plug#begin')
         Plug 'vim-scripts/Tagbar'
 
         " --------------------------------
-        " Linguagens & Sintaxe
+        " LINGUAGENS & SINTAXE
         " --------------------------------
         Plug 'sheerun/vim-polyglot'
         Plug 'GabrielFrigo4/fasm.vim'
@@ -145,7 +145,7 @@ endif
 let mapleader="\\"
 
 " --------------------------------
-" Navegacao & Palavras
+" NAVEGACAO & PALAVRAS
 " --------------------------------
 nnoremap <tab> :wincmd w<CR>
 nnoremap ; :wincmd w<CR>
@@ -168,14 +168,14 @@ inoremap <silent> <Esc>[5D <C-o>b
 inoremap <silent> <Esc>[5C <C-o>w
 
 " --------------------------------
-" NERDTree
+" NERDTREE
 " --------------------------------
 nnoremap <C-\> :NERDTreeToggle<CR>
 nnoremap , :NERDTreeToggle<CR>
 nnoremap <M-[> :NERDTreeToggle<CR>
 
 " --------------------------------
-" FZF & Submodulos
+" FZF & SUBMODULOS
 " --------------------------------
 if executable('rg')
     let $FZF_DEFAULT_COMMAND = 'rg --files --hidden --follow --glob "!.git/*"'
@@ -202,13 +202,13 @@ nnoremap <C-b> :Buffers<CR>
 nnoremap <C-g> :Rg<CR>
 
 " --------------------------------
-" Utilitarios
+" UTILITARIOS
 " --------------------------------
 nnoremap <leader><space> :nohlsearch<CR>
 nnoremap <expr> <Backspace> col('.') == 1 ? 'kgJ' : 'X'
 
 " --------------------------------
-" Comentarios Nativos (Zero-Plugin)
+" COMENTARIOS NATIVOS
 " --------------------------------
 function! s:ToggleComment() abort
     let l:lead = exists('b:comment_leader') ? b:comment_leader :
@@ -231,7 +231,7 @@ vnoremap <silent> gc :<C-u>'<,'>call <SID>ToggleComment()<CR>
 " ================================
 
 " --------------------------------
-" Tema & Fallback
+" TEMA & FALLBACK
 " --------------------------------
 function! s:ApplyRawTTYHighlights() abort
     set nocursorcolumn
@@ -288,7 +288,7 @@ if s:is_ssh || s:is_raw_tty
 endif
 
 " --------------------------------
-" Estilo do Cursor
+" ESTILO DO CURSOR
 " --------------------------------
 if s:is_raw_tty
     set guicursor=
@@ -369,6 +369,9 @@ elseif !s:is_raw_tty
     let &t_SR = "\<Esc>[3 q"
     let &t_EI = "\<Esc>[1 q"
     let &t_te = "\<Esc>[1 q"
+    if exists('&t_SH')
+        let &t_SH = "\<Esc>[%d q"
+    endif
     if exists('##ModeChanged') && exists('*echoraw')
         augroup PTYCursor
             autocmd!
@@ -403,12 +406,12 @@ nnoremap <expr> <silent> r <SID>start_r(0)
 inoremap <expr> <silent> <C-o>r <SID>start_r(1)
 
 " --------------------------------
-" ManPages
+" MANPAGES
 " --------------------------------
 runtime! ftplugin/man.vim
 
 " --------------------------------
-" Assembly
+" ASSEMBLY
 " --------------------------------
 augroup AssemblyConfig
     autocmd!
@@ -424,7 +427,7 @@ augroup AssemblyConfig
 augroup END
 
 " --------------------------------
-" Terminal Embutido
+" TERMINAL EMBUTIDO
 " --------------------------------
 if has('terminal')
     let g:terminal_ansi_colors = [
