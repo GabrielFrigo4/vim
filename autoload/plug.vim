@@ -2348,7 +2348,7 @@ endfunction
 
 function! s:system_job(cmd) abort
   let tmp = tempname()
-  let job = job_start(['/bin/sh', '-c', a:cmd], {
+  let job = job_start(['sh', '-c', a:cmd], {
   \ 'out_io': 'file',
   \ 'out_name': tmp,
   \ 'err_io': 'out',
