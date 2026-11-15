@@ -24,7 +24,7 @@ endif
 let s:is_win = has('win32') || has('win64')
 let s:is_win_con = s:is_win && !has('gui_running') && &term ==# 'win32'
 let s:is_win_vtp = s:is_win_con && (has('vcon') || !empty($WT_SESSION))
-let s:is_raw_tty = !s:is_win && ($RAW_TTY ==# '1' || $TERM ==# 'linux' || $TERM ==# 'cons25' || $TERM =~# '^vt[0-9]' || (empty($DISPLAY) && empty($WAYLAND_DISPLAY) && empty($SSH_CONNECTION) && empty($SSH_TTY) && !empty($TERM) && $TERM !~? 'xterm-256color|alacritty|kitty|foot|wezterm|ghostty'))
+let s:is_raw_tty = !s:is_win && ($RAW_TTY ==# '1' || $TERM ==# 'linux' || $TERM ==# 'cons25' || $TERM =~# '^vt[0-9]' || (empty($DISPLAY) && empty($WAYLAND_DISPLAY) && empty($SSH_CONNECTION) && empty($SSH_TTY) && empty($WT_SESSION) && !empty($TERM) && $TERM !~? 'xterm-256color\|alacritty\|kitty\|foot\|wezterm\|ghostty'))
 let s:is_ssh = (!empty($SSH_CONNECTION) || !empty($SSH_CLIENT) || !empty($SSH_TTY))
 
 let s:user_vim_dir = s:is_win ? expand('$HOME/vimfiles') : expand('$HOME/.vim')
