@@ -65,6 +65,9 @@ git clone "https://github.com/GabrielFrigo4/vim.git" "${HOME}/.vim"
 ln -sf "${HOME}/.vim/vimrc" "${HOME}/.vimrc"
 ```
 
+> [!NOTE]
+> Se o clone estiver em `~/vimfiles` (PowerShell) e o `vim` do PATH for o do MSYS2, crie a junction manualmente: `New-Item -ItemType Junction -Path "$HOME\.vim" -Target "$HOME\vimfiles"`.
+
 ---
 
 ### Opção B — Modo Standalone Limpo (Zero-Bloat / Produção)
