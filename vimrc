@@ -22,6 +22,8 @@ if s:is_gui_pty
 endif
 
 let s:is_win = has('win32') || has('win64')
+let s:is_win_con = s:is_win && !has('gui_running') && &term ==# 'win32'
+let s:is_win_vtp = s:is_win_con && (has('vcon') || !empty($WT_SESSION))
 let s:is_raw_tty = !s:is_win && ($RAW_TTY ==# '1' || $TERM ==# 'linux' || $TERM ==# 'cons25' || $TERM =~# '^vt[0-9]' || (empty($DISPLAY) && empty($WAYLAND_DISPLAY) && empty($SSH_CONNECTION) && empty($SSH_TTY) && !empty($TERM) && $TERM !~? 'xterm-256color|alacritty|kitty|foot|wezterm|ghostty'))
 let s:is_ssh = (!empty($SSH_CONNECTION) || !empty($SSH_CLIENT) || !empty($SSH_TTY))
 
@@ -96,6 +98,19 @@ if s:is_raw_tty
         set notermguicolors
     endif
     set t_Co=16
+elseif s:is_win_con
+    if has('vcon')
+        if &t_Co < 256
+            set t_Co=256
+        endif
+        if has('termguicolors')
+            set termguicolors
+        endif
+    else
+        if has('termguicolors')
+            set notermguicolors
+        endif
+    endif
 else
     if has('termguicolors')
         set termguicolors
@@ -290,12 +305,23 @@ endif
 " --------------------------------
 " ESTILO DO CURSOR
 " --------------------------------
-if s:is_raw_tty
-    set guicursor=
-else
-    au VimEnter,VimResume * set guicursor=n-v-sm:block,i-ci:ver25,c:ver25,r-cr:hor50,o:hor50,ve:ver35,a:blinkwait600-blinkoff600-blinkon600-Cursor/lCursor
-    au VimLeave,VimSuspend * set guicursor=
+if exists('&guicursor')
+    augroup CursorGuiConfig
+        autocmd!
+        if s:is_raw_tty || s:is_win_vtp
+            set guicursor=
+        elseif s:is_win_con
+            autocmd VimEnter,VimResume * set guicursor=n-v-sm:block,i-ci:hor15,c:hor15,r-cr:hor50,o:hor50,ve:hor35
+            autocmd VimLeave,VimSuspend * set guicursor=
+        else
+            autocmd VimEnter,VimResume * set guicursor=n-v-sm:block,i-ci:ver25,c:ver25,r-cr:hor50,o:hor50,ve:ver35,a:blinkwait600-blinkoff600-blinkon600-Cursor/lCursor
+            autocmd VimLeave,VimSuspend * set guicursor=
+        endif
+    augroup END
 endif
+
+let s:r_pending = 0
+let s:last_cursor_mode = ''
 
 function! s:scale_tone(alpha) abort
     let l:col = synIDattr(synIDtrans(hlID('Cursor')), 'bg#')
@@ -321,83 +347,165 @@ function! s:scale_tone(alpha) abort
     return printf('#%02x%02x%02x', l:nr, l:ng, l:nb)
 endfunction
 
-if $TERM ==# 'linux'
-    let &t_vi = "\<Esc>[?25l"
-    let &t_ve = "\<Esc>[?25h"
-    let &t_VS = "\<Esc>[?25h"
-    let &t_SI = "\<Esc>[?2c"
-    let &t_SR = "\<Esc>[?4c"
-    let &t_EI = "\<Esc>[?6c"
-    let &t_te = "\<Esc>%G\<Esc>[?16;238;0c"
+function! s:cursor_mode_kind(mode) abort
+    if a:mode =~# '^no' || a:mode =~# '^R' || a:mode ==# 'cr' || a:mode ==# 'cvr'
+        return 'replace'
+    elseif a:mode =~# '^c'
+        return 'cmdline'
+    elseif a:mode =~# '^i'
+        return 'insert'
+    elseif a:mode =~# '^[vV\x16sS\x13]'
+        return 'visual'
+    endif
+    return 'normal'
+endfunction
+
+function! s:pty_seq(shape, alpha) abort
+    if s:is_win_con
+        return "\<Esc>[" . a:shape . " q"
+    endif
+    return "\<Esc>[" . a:shape . " q\<Esc>]12;" . s:scale_tone(a:alpha) . "\<C-g>"
+endfunction
+
+function! s:cursor_seq(mode) abort
+    let l:kind = s:cursor_mode_kind(a:mode)
+    if !s:is_win && $TERM ==# 'linux'
+        if l:kind ==# 'insert'
+            return "\<Esc>[?2c"
+        elseif l:kind ==# 'cmdline'
+            return "\<Esc>[?3c"
+        elseif l:kind ==# 'replace'
+            return "\<Esc>[?4c"
+        elseif l:kind ==# 'visual'
+            return "\<Esc>[?5c"
+        endif
+        return "\<Esc>[?6c"
+    elseif s:is_raw_tty
+        if l:kind ==# 'insert'
+            return "\<Esc>]12;" . s:scale_tone(0.92) . "\<C-g>"
+        elseif l:kind ==# 'cmdline'
+            return "\<Esc>]12;" . s:scale_tone(0.84) . "\<C-g>"
+        elseif l:kind ==# 'replace'
+            return "\<Esc>]12;" . s:scale_tone(0.76) . "\<C-g>"
+        elseif l:kind ==# 'visual'
+            return "\<Esc>]12;" . s:scale_tone(0.68) . "\<C-g>"
+        endif
+        return "\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>"
+    endif
+    if l:kind ==# 'insert'
+        return s:pty_seq(5, 0.92)
+    elseif l:kind ==# 'cmdline'
+        return s:pty_seq(5, 0.84)
+    elseif l:kind ==# 'replace'
+        return s:pty_seq(3, 0.76)
+    elseif l:kind ==# 'visual'
+        return s:pty_seq(1, 0.68)
+    endif
+    return s:pty_seq(1, 1.0)
+endfunction
+
+function! s:sync_cursor(mode, force) abort
+    if !exists('*echoraw')
+        return
+    endif
+    if !a:force && a:mode ==# s:last_cursor_mode
+        return
+    endif
+    let s:last_cursor_mode = a:mode
+    call echoraw(s:cursor_seq(a:mode))
+endfunction
+
+if !has('gui_running') && !s:is_win && $TERM ==# 'linux'
+    if exists('&t_vi')
+        let &t_vi = "\<Esc>[?25l"
+        let &t_ve = "\<Esc>[?25h"
+        let &t_VS = "\<Esc>[?25h"
+    endif
+    if exists('&t_SI')
+        let &t_SI = "\<Esc>[?2c"
+        let &t_SR = "\<Esc>[?4c"
+        let &t_EI = "\<Esc>[?6c"
+        let &t_te = "\<Esc>%G\<Esc>[?16;238;0c"
+    endif
     if exists('##ModeChanged') && exists('*echoraw')
         augroup LinuxTTYCursor
             autocmd!
-            autocmd VimEnter * call echoraw("\<Esc>[?6c")
-            autocmd ModeChanged *:i* call echoraw("\<Esc>[?2c")
-            autocmd ModeChanged *:c* call echoraw("\<Esc>[?3c")
-            autocmd ModeChanged *:r*,*:R* call echoraw("\<Esc>[?4c")
-            autocmd ModeChanged *:o* call echoraw("\<Esc>[?4c")
-            execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>[?5c\")"
-            autocmd ModeChanged *:n* call echoraw("\<Esc>[?6c")
+            autocmd VimEnter,VimResume * call s:sync_cursor(mode(1), 1)
+            autocmd ModeChanged * if !s:r_pending | call s:sync_cursor(v:event.new_mode, 0) | endif
             if exists('##CmdlineEnter')
-                autocmd CmdlineEnter * call echoraw("\<Esc>[?3c")
-                autocmd CmdlineLeave * call echoraw("\<Esc>[?6c")
+                autocmd CmdlineEnter * call s:sync_cursor(mode(1), 0)
+                autocmd CmdlineLeave * call s:sync_cursor('n', 0)
             endif
-            autocmd VimLeave,VimSuspend * call echoraw("\<Esc>%G\<Esc>[?16;238;0c")
+            autocmd VimLeave,VimSuspend * let s:last_cursor_mode = '' | call echoraw("\<Esc>%G\<Esc>[?16;238;0c")
         augroup END
     endif
-elseif s:is_raw_tty
+elseif !has('gui_running') && s:is_raw_tty
     if exists('##ModeChanged') && exists('*echoraw')
         augroup FreeBSDTTYCursor
             autocmd!
-            autocmd VimEnter * call echoraw("\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>")
-            autocmd ModeChanged *:i* call echoraw("\<Esc>]12;" . s:scale_tone(0.92) . "\<C-g>")
-            autocmd ModeChanged *:c* call echoraw("\<Esc>]12;" . s:scale_tone(0.84) . "\<C-g>")
-            autocmd ModeChanged *:r*,*:R* call echoraw("\<Esc>]12;" . s:scale_tone(0.76) . "\<C-g>")
-            autocmd ModeChanged *:o* call echoraw("\<Esc>]12;" . s:scale_tone(0.76) . "\<C-g>")
-            execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>]12;\" . s:scale_tone(0.68) . \"\\<C-g>\")"
-            autocmd ModeChanged *:n* call echoraw("\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>")
+            autocmd VimEnter,VimResume * call s:sync_cursor(mode(1), 1)
+            autocmd ModeChanged * if !s:r_pending | call s:sync_cursor(v:event.new_mode, 0) | endif
             if exists('##CmdlineEnter')
-                autocmd CmdlineEnter * call echoraw("\<Esc>]12;" . s:scale_tone(0.84) . "\<C-g>")
-                autocmd CmdlineLeave * call echoraw("\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>")
+                autocmd CmdlineEnter * call s:sync_cursor(mode(1), 0)
+                autocmd CmdlineLeave * call s:sync_cursor('n', 0)
             endif
-            autocmd VimLeave,VimSuspend * call echoraw("\<Esc>]112\<C-g>")
+            autocmd ColorScheme * let s:last_cursor_mode = '' | call s:sync_cursor(mode(1), 1)
+            autocmd VimLeave,VimSuspend * let s:last_cursor_mode = '' | call echoraw("\<Esc>]112\<C-g>")
         augroup END
     endif
-elseif !s:is_raw_tty
-    let &t_SI = "\<Esc>[5 q"
-    let &t_SR = "\<Esc>[3 q"
-    let &t_EI = "\<Esc>[1 q"
-    let &t_te = "\<Esc>[1 q"
+elseif !has('gui_running') && (!s:is_win_con || s:is_win_vtp)
+    if exists('&t_SI')
+        let &t_SI = "\<Esc>[5 q"
+        let &t_SR = "\<Esc>[3 q"
+        let &t_EI = "\<Esc>[1 q"
+        if stridx(&t_ti, "\<Esc>[1 q") == -1
+            let &t_ti .= "\<Esc>[1 q"
+        endif
+        if stridx(&t_te, "\<Esc>[1 q") == -1
+            let &t_te .= "\<Esc>[1 q"
+        endif
+    endif
     if exists('&t_SH')
         let &t_SH = "\<Esc>[%d q"
     endif
     if exists('##ModeChanged') && exists('*echoraw')
         augroup PTYCursor
             autocmd!
-            autocmd VimEnter * call echoraw("\<Esc>[1 q\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>")
-            autocmd ModeChanged *:i* call echoraw("\<Esc>[5 q\<Esc>]12;" . s:scale_tone(0.92) . "\<C-g>")
-            autocmd ModeChanged *:c* call echoraw("\<Esc>[5 q\<Esc>]12;" . s:scale_tone(0.84) . "\<C-g>")
-            autocmd ModeChanged *:r*,*:R* call echoraw("\<Esc>[3 q\<Esc>]12;" . s:scale_tone(0.76) . "\<C-g>")
-            autocmd ModeChanged *:o* call echoraw("\<Esc>[3 q\<Esc>]12;" . s:scale_tone(0.76) . "\<C-g>")
-            execute "autocmd ModeChanged *:v*,*:V*,*:\<C-V\>*,*:s*,*:S*,*:\<C-S\>* call echoraw(\"\\<Esc>[1 q\\<Esc>]12;\" . s:scale_tone(0.68) . \"\\<C-g>\")"
-            autocmd ModeChanged *:n* call echoraw("\<Esc>[1 q\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>")
+            autocmd VimEnter,VimResume * call s:sync_cursor(mode(1), 1) | if s:is_win_con | let s:last_cursor_mode = '' | endif
+            autocmd ModeChanged * if !s:r_pending | call s:sync_cursor(v:event.new_mode, 0) | endif
             if exists('##CmdlineEnter')
-                autocmd CmdlineEnter * call echoraw("\<Esc>[5 q\<Esc>]12;" . s:scale_tone(0.84) . "\<C-g>")
-                autocmd CmdlineLeave * call echoraw("\<Esc>[1 q\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>")
+                autocmd CmdlineEnter * call s:sync_cursor(mode(1), 0)
+                autocmd CmdlineLeave * call s:sync_cursor('n', 0)
             endif
-            autocmd VimLeave,VimSuspend * call echoraw("\<Esc>[1 q\<Esc>]112\<C-g>")
+            if s:is_win_con
+                if exists('##ShellCmdPost') && exists('##FocusGained')
+                    autocmd ShellCmdPost,FocusGained * call s:sync_cursor(mode(1), 1) | let s:last_cursor_mode = ''
+                endif
+                if exists('##SafeState')
+                    autocmd SafeState * if !s:r_pending && mode(1) !=# s:last_cursor_mode | call s:sync_cursor(mode(1), 1) | endif
+                endif
+            else
+                autocmd ColorScheme * let s:last_cursor_mode = '' | call s:sync_cursor(mode(1), 1)
+            endif
+            autocmd VimLeave,VimSuspend * let s:last_cursor_mode = '' | call echoraw(s:is_win_con ? "\<Esc>[1 q" : "\<Esc>[1 q\<Esc>]112\<C-g>")
         augroup END
     endif
 endif
 
+function! s:end_r() abort
+    let s:r_pending = 0
+    call s:sync_cursor(mode(1), 1)
+endfunction
+
 function! s:start_r(is_insert) abort
-    let l:cur = ($TERM ==# 'linux') ? "\<Esc>[?4c" : ("\<Esc>[3 q\<Esc>]12;" . s:scale_tone(0.76) . "\<C-g>")
-    let l:norm = a:is_insert ? (($TERM ==# 'linux') ? "\<Esc>[?2c" : ("\<Esc>[5 q\<Esc>]12;" . s:scale_tone(0.92) . "\<C-g>")) : (($TERM ==# 'linux') ? "\<Esc>[?6c" : ("\<Esc>[1 q\<Esc>]12;" . s:scale_tone(1.0) . "\<C-g>"))
+    if has('gui_running') || (s:is_win_con && !s:is_win_vtp)
+        return a:is_insert ? "\<C-o>r" : 'r'
+    endif
     if exists('*echoraw')
-        call echoraw(l:cur)
+        call echoraw(s:cursor_seq('R'))
         if exists('##SafeState')
-            execute 'autocmd SafeState * ++once call echoraw("' . escape(l:norm, '"\') . '")'
+            let s:r_pending = 1
+            autocmd SafeState * ++once call s:end_r()
         endif
     endif
     return a:is_insert ? "\<C-o>r" : 'r'
