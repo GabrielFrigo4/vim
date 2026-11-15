@@ -65,8 +65,13 @@ git clone "https://github.com/GabrielFrigo4/vim.git" "${HOME}/.vim"
 ln -sf "${HOME}/.vim/vimrc" "${HOME}/.vimrc"
 ```
 
-> [!NOTE]
-> Se o clone estiver em `~/vimfiles` (PowerShell) e o `vim` do PATH for o do MSYS2, crie a junction manualmente: `New-Item -ItemType Junction -Path "$HOME\.vim" -Target "$HOME\vimfiles"`.
+#### 🔗 Windows (Clone Único em `~/vimfiles` com Vim do MSYS2)
+
+O Vim do MSYS2 (`C:\msys64\usr\bin\vim.exe`) é uma build Unix: ele procura a configuração apenas em `~/.vimrc` e `~/.vim/vimrc`, ignorando `~/vimfiles`, que é exclusivo do Vim nativo do Windows. Se o repositório foi clonado em `~/vimfiles` pelo PowerShell e o `vim` resolvido pelo `PATH` for o do MSYS2, ele inicia apenas com o `defaults.vim`, sem tema, plugins ou cursor multi-modo. Uma junction de `~/.vim` para `~/vimfiles` permite que ambas as builds compartilhem o mesmo clone, sem duplicação e sem privilégios de administrador. Esta etapa é manual e precisa ser repetida após uma reinstalação do sistema.
+
+```powershell
+New-Item -ItemType Junction -Path "$HOME\.vim" -Target "$HOME\vimfiles"
+```
 
 ---
 
