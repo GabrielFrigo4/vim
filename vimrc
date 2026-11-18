@@ -14,17 +14,24 @@ filetype plugin indent on
 syntax on
 set encoding=UTF-8
 
-let s:is_gui_pty = (!empty($DISPLAY) || !empty($WAYLAND_DISPLAY) || (filereadable('/proc/self/fd/0') && resolve('/proc/self/fd/0') =~# '^/dev/pts/'))
+let s:is_gui_pty = (!empty($DISPLAY) || !empty($WAYLAND_DISPLAY) || !empty($WT_SESSION) || !empty($KONSOLE_VERSION) || !empty($TERM_PROGRAM))
 if s:is_gui_pty
     silent! unlet $RAW_TTY
     silent! unlet $LC_RAW_TTY
     silent! unlet $UNIVERSAL_RAW_TTY
+    silent! unlet $FORCE_RAW_TTY
 endif
 
 let s:is_win = has('win32') || has('win64')
 let s:is_win_con = s:is_win && !has('gui_running') && &term ==# 'win32'
 let s:is_win_vtp = s:is_win_con && (has('vcon') || !empty($WT_SESSION))
-let s:is_raw_tty = !s:is_win && ($RAW_TTY ==# '1' || $TERM ==# 'linux' || $TERM ==# 'cons25' || $TERM =~# '^vt[0-9]' || (empty($DISPLAY) && empty($WAYLAND_DISPLAY) && empty($SSH_CONNECTION) && empty($SSH_TTY) && empty($WT_SESSION) && !empty($TERM) && $TERM !~? 'xterm-256color\|alacritty\|kitty\|foot\|wezterm\|ghostty'))
+let s:is_raw_tty = !s:is_win && !s:is_gui_pty && ($RAW_TTY ==# '1' || $LC_RAW_TTY ==# '1' || $UNIVERSAL_RAW_TTY ==# '1' || $FORCE_RAW_TTY ==# '1' || $TERM ==# 'linux' || $TERM ==# 'cons25' || $TERM =~# '^vt[0-9]' || (empty($SSH_CONNECTION) && empty($SSH_TTY) && !empty($TERM) && $TERM !~? 'xterm-256color\|alacritty\|kitty\|foot\|wezterm\|ghostty'))
+if s:is_raw_tty
+    let $RAW_TTY = '1'
+    let $LC_RAW_TTY = '1'
+    let $UNIVERSAL_RAW_TTY = '1'
+    silent! unlet $COLORTERM $MICRO_TRUECOLOR
+endif
 let s:is_ssh = (!empty($SSH_CONNECTION) || !empty($SSH_CLIENT) || !empty($SSH_TTY))
 
 let s:user_vim_dir = s:is_win ? expand('$HOME/vimfiles') : expand('$HOME/.vim')
@@ -549,8 +556,10 @@ if has('terminal')
     augroup VimTerminalConfig
         autocmd!
         autocmd TerminalOpen * setlocal nonumber norelativenumber signcolumn=no
-        if s:is_gui_pty
-            autocmd TerminalOpen * silent! unlet $RAW_TTY $LC_RAW_TTY $UNIVERSAL_RAW_TTY
+        if s:is_raw_tty
+            autocmd TerminalOpen * let $RAW_TTY = '1' | let $LC_RAW_TTY = '1' | let $UNIVERSAL_RAW_TTY = '1' | let $FORCE_RAW_TTY = '1' | silent! unlet $COLORTERM $MICRO_TRUECOLOR
+        else
+            autocmd TerminalOpen * silent! unlet $RAW_TTY $LC_RAW_TTY $UNIVERSAL_RAW_TTY $FORCE_RAW_TTY
         endif
     augroup END
 endif
