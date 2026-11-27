@@ -35,16 +35,11 @@ Este runbook orienta desenvolvedores e agentes de inteligência artificial na ma
 
 ## 🧪 1. Validação em Modo Headless
 
-Sempre teste a inicialização limpa do Vim antes de efetuar commits ou concluir alterações:
+Sempre teste a inicialização limpa do Vim pelo `Makefile` canônico, script unificado `./vim.sh` ou modo silencioso:
 
 ```sh
-# Via Makefile canônico
 make test
-
-# Ou via script unificado de componente
 ./vim.sh test
-
-# Ou diretamente via comando vim headless/silencioso
 vim -u vimrc -es -c "quit"
 ```
 
@@ -82,14 +77,11 @@ Em sessões interativas do Vim:
 
 ## 🚀 4. Sincronização & Deploy Soberano
 
-O repositório opera de forma independente ou gerenciado pelo **Universal Environment**:
+O repositório opera de forma independente (clonagem direta para `~/.vim` + symlink em `~/.vimrc`) ou gerenciado pelo **Universal Environment** (`make uped` atualiza a suíte e `make install` sincroniza os clones):
 
 ```sh
-# A partir do Universal Environment (orquestrador pai)
-make uped    # Atualiza a suite de editores com upstream
-make deploy  # Sincroniza clones nos destinos canonicos
-
-# Ou clonagem direta e vinculação canônica
+make uped
+make install
 git clone "https://github.com/GabrielFrigo4/vim.git" "${HOME}/.vim"
 ln -sf "${HOME}/.vim/vimrc" "${HOME}/.vimrc"
 ```
